@@ -1,9 +1,9 @@
 {
-  "name": "book_nook",
+  "name": "server",
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app",
+    "dev": "nodemon server/app",
     "client": "npm --prefix client run dev",
     "build": "npm --prefix client run build"
   },
