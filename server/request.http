@@ -1,0 +1,40 @@
+//Metodo para mostrar libros
+GET http://localhost:3000 HTTP/1.1
+
+###
+//Metodo para borrar libro
+DELETE http://localhost:3000/libros/4 HTTP/1.1
+
+###
+
+//Metodo para agregar libro
+POST http://localhost:3000/libros
+Content-Type: application/json
+
+{
+    "titulo": "libro falso",
+    "descripcion": "Como todo en la vida esto no es mas que una simple ilusion",
+    "precio": 2000,
+    "stock": 1,
+    "es_fisico": 0,
+    "fecha_publicacion": "2001-09-11T03:00:00.000Z",
+    "id_editorial": 1,
+    "id_autor": 1
+}
+
+###
+
+//Metodo para actualizar libro
+PUT http://localhost:3000/libros/4 HTTP/1.1
+Content-Type: application/json
+
+{
+    "titulo": "libro real",
+    "descripcion": "Igual de real que las mujeres",
+    "precio": 666,
+    "stock": 0,
+    "es_fisico": 0,
+    "fecha_publicacion": "2001-09-11T03:00:00.000Z",
+    "id_editorial": 1,
+    "id_autor": 1
+}
