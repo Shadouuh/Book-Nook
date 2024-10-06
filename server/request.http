@@ -1,14 +1,8 @@
-//Metodo para mostrar libros
-GET http://localhost:3000 HTTP/1.1
-
-###
-//Metodo para borrar libro
-DELETE http://localhost:3000/libros/4 HTTP/1.1
+GET http://localhost:3000/api/libros HTTP/1.1
 
 ###
 
-//Metodo para agregar libro
-POST http://localhost:3000/libros
+POST http://localhost:3000/api/libros
 Content-Type: application/json
 
 {
@@ -24,17 +18,21 @@ Content-Type: application/json
 
 ###
 
-//Metodo para actualizar libro
-PUT http://localhost:3000/libros/4 HTTP/1.1
+DELETE http://localhost:3000/api/libros/7 HTTP/1.1
+
+###
+
+PUT http://localhost:3000/api/libros/1 HTTP/1.1
 Content-Type: application/json
 
 {
-    "titulo": "libro real",
-    "descripcion": "Igual de real que las mujeres",
-    "precio": 666,
-    "stock": 0,
-    "es_fisico": 0,
-    "fecha_publicacion": "2001-09-11T03:00:00.000Z",
+    "id_libro": 1,
+    "titulo": "2 veces junio",
+    "descripcion": "Argentina resumen",
+    "precio": 11000,
+    "stock": 15,
+    "es_fisico": 1,
+    "fecha_publicacion": "2002-01-01T03:00:00.000Z",
     "id_editorial": 1,
     "id_autor": 1
 }
