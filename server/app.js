@@ -2,6 +2,8 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const anju = require('anju-js');
+
 const app = express();
 const port = 3000;
 
@@ -12,8 +14,70 @@ const conex = require(path.join(__dirname, 'config', 'conexBD'));
 app.use(express.json());
 app.use(cors());
 
+
 /*### Endpoints ###*/
 
+//LOGIN
+app.post('/login', (req, res) => {
+    let { email, clave } = req.body;
+    clave = anju.encrypt(clave);
+    const query = `SELECT id_login FROM login WHERE email='${email}' AND clave='${clave}'`;
+
+    conex.query(query, (err, results) => {
+        if (err || results == "") {
+            console.error('Error al logearse', err);
+            res.status(401).send('Credenciales incorrectas');
+        } else {
+            res.send({ resultado: results});
+            console.log('Se logeo correctamente');
+        };
+    });
+});
+
+//Register
+app.post('/register', (req, res) => {
+    let { email, telefono, clave } = req.body;
+    clave = anju.encrypt(clave);
+
+    const query = `INSERT INTO login(email, telefono, clave, tipo) VALUES('${email}', '${telefono}', '${clave}', 'cliente')`;
+
+    conex.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al registrarse', err);
+            res.status(401).send('Credenciales incorrectas');
+        } else res.send({ message: 'Se registro correctamente'});
+    });
+});
+
+//SELECT BY ID
+app.get('/api/:tabla/:id', (req, res) => {
+    const { tabla, id } = req.params;
+
+    const queryDesc = 'DESC ' + tabla;
+    conex.query(queryDesc, (err, result) => {
+
+        if (err) return res.status(500).send('Error al obtener las columnas de la tabla ' + tabla);
+
+        const columnas = result.map(col => col.Field);
+
+        result.map(function (col) {
+            if (col.Key == "PRI") primary = col.Field;
+        });
+
+        const query = `SELECT * FROM ${tabla} WHERE ${primary} = ${id}`;
+
+        conex.query(query, (err, results) => {
+            if (err) {
+                console.error('Error al mostrar', err);
+                res.status(500).send('Error en la consulta');
+            } else res.send({ resultados: results });
+        });
+    });
+
+
+});
+
+//CRUD
 app.get('/api/:tabla', (req, res) => {
     const { tabla } = req.params;
     const query = 'SELECT * FROM ' + tabla;
@@ -22,9 +86,7 @@ app.get('/api/:tabla', (req, res) => {
         if (err) {
             console.error('Error al mostrar', err);
             res.status(500).send('Error en la consulta');
-        } else {
-            res.send({ resultados: results });
-        }
+        } else res.send({ resultados: results });
     });
 });
 
@@ -32,7 +94,7 @@ app.post('/api/:tabla', (req, res) => {
     const { tabla } = req.params;
     const datos = req.body;
 
-    const queryDesc = `DESC ${tabla}`;
+    const queryDesc = 'DESC ' + tabla;
     conex.query(queryDesc, (err, result) => {
         if (err) return res.status(500).send('Error al obtener las columnas de la tabla ' + tabla);
 

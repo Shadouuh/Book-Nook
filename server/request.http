@@ -18,7 +18,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/api/libros/7 HTTP/1.1
+DELETE http://localhost:3000/api/login/3 HTTP/1.1
 
 ###
 
@@ -35,4 +35,41 @@ Content-Type: application/json
     "fecha_publicacion": "2002-01-01T03:00:00.000Z",
     "id_editorial": 1,
     "id_autor": 1
+}
+
+###
+
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "email": "juancottier0@gmail.com",
+    "clave": "1234"
+}
+
+###
+
+GET http://localhost:3000/api/libros/1 HTTP/1.1
+
+###
+
+GET http://localhost:3000/api/login HTTP/1.1
+
+###
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "email": "juanescolar0@gmail.com",
+    "clave": "contraseña1234"
+}
+
+###
+
+POST http://localhost:3000/register
+Content-Type: application/json
+
+{
+    "email": "juanescolar0@gmail.com",
+    "clave": "contraseña1234"
 }

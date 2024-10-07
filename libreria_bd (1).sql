@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-10-2024 a las 21:07:04
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Tiempo de generación: 06-10-2024 a las 16:04:03
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -114,6 +114,13 @@ CREATE TABLE `clave_libro` (
   `id_usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
+--
+-- Volcado de datos para la tabla `clave_libro`
+--
+
+INSERT INTO `clave_libro` (`id_clave`, `token`, `id_libro`, `id_usuario`) VALUES
+(2, 'kdsnflkdsnfnsdknfsdlkfksdfknsdkfdsfnlksnkfnlksnflsnlknflknslkfn', 3, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -166,7 +173,7 @@ INSERT INTO `libros` (`id_libro`, `titulo`, `descripcion`, `precio`, `stock`, `e
 
 CREATE TABLE `libros_imgs` (
   `id_libro_img` int(11) NOT NULL,
-  `nombre` varchar(255) DEFAULT NULL,
+  `archivo` varchar(255) DEFAULT NULL,
   `tipo_angulo` enum('adelante','atras','adentro') DEFAULT NULL,
   `id_libro` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
@@ -202,7 +209,7 @@ CREATE TABLE `login` (
   `email` varchar(100) DEFAULT NULL,
   `telefono` varchar(15) DEFAULT NULL,
   `clave` varchar(50) DEFAULT NULL,
-  `tipo` enum('super_admin','cliente','encargado','empleado','repatidor','invitado') NOT NULL
+  `tipo` enum('super_admin','cliente','encargado','empleado','repatidor') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 --
@@ -399,7 +406,9 @@ ALTER TABLE `login`
 -- Indices de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  ADD PRIMARY KEY (`id_pedido`);
+  ADD PRIMARY KEY (`id_pedido`),
+  ADD UNIQUE KEY `id_usuario` (`id_usuario`,`id_carrito`),
+  ADD KEY `id_carrito` (`id_carrito`);
 
 --
 -- Indices de la tabla `usuarios`
@@ -412,7 +421,9 @@ ALTER TABLE `usuarios`
 -- Indices de la tabla `usuario_autor_favorito`
 --
 ALTER TABLE `usuario_autor_favorito`
-  ADD PRIMARY KEY (`id_uaf`);
+  ADD PRIMARY KEY (`id_uaf`),
+  ADD UNIQUE KEY `id_usuario` (`id_usuario`,`id_autor`),
+  ADD KEY `id_autor` (`id_autor`);
 
 --
 -- Indices de la tabla `usuario_categoria_favorita`
@@ -462,7 +473,7 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT de la tabla `clave_libro`
 --
 ALTER TABLE `clave_libro`
-  MODIFY `id_clave` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_clave` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `editoriales`
@@ -569,10 +580,24 @@ ALTER TABLE `libro_categoria`
   ADD CONSTRAINT `libro_categoria_ibfk_2` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id_categoria`) ON DELETE CASCADE;
 
 --
+-- Filtros para la tabla `pedidos`
+--
+ALTER TABLE `pedidos`
+  ADD CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`id_carrito`) REFERENCES `carrito` (`id_carrito`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pedidos_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`id_login`) REFERENCES `login` (`id_login`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `usuario_autor_favorito`
+--
+ALTER TABLE `usuario_autor_favorito`
+  ADD CONSTRAINT `usuario_autor_favorito_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `usuario_autor_favorito_ibfk_2` FOREIGN KEY (`id_autor`) REFERENCES `autores` (`id_autor`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `usuario_categoria_favorita`
