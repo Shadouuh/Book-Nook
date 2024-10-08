@@ -21,9 +21,9 @@ app.use(cors());
 app.post('/login', (req, res) => {
     let { email, clave } = req.body;
     clave = anju.encrypt(clave);
-    const query = `SELECT id_login FROM login WHERE email='${email}' AND clave='${clave}'`;
+    const query = "SELECT id_login, tipo FROM login WHERE email=? AND clave=?";
 
-    conex.query(query, (err, results) => {
+    conex.query(query, [email, clave],(err, results) => {
         if (err || results == "") {
             console.error('Error al logearse', err);
             res.status(401).send('Credenciales incorrectas');
@@ -39,9 +39,9 @@ app.post('/register', (req, res) => {
     let { email, telefono, clave } = req.body;
     clave = anju.encrypt(clave);
 
-    const query = `INSERT INTO login(email, telefono, clave, tipo) VALUES('${email}', '${telefono}', '${clave}', 'cliente')`;
+    const query = "INSERT INTO login(email, telefono, clave, tipo) VALUES(?, ?, ?, 'cliente')";
 
-    conex.query(query, (err, results) => {
+    conex.query(query, [email, telefono, clave ], (err, results) => {
         if (err) {
             console.error('Error al registrarse', err);
             res.status(401).send('Credenciales incorrectas');
@@ -106,7 +106,7 @@ app.post('/api/:tabla', (req, res) => {
         conex.query(query, valores, (err, result) => {
             if (err) return res.status(500).send('Error al insertar los datos');
 
-            res.send(`Datos insertados en la tabla ${tabla}`);
+            res.send({ message: 'Se inserto correctamente en ' + tabla});
         });
     });
 });
