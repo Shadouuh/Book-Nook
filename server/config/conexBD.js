@@ -1,12 +1,10 @@
-// Requerimentos
 const mysql = require('mysql2')
 
-// Conexion
 const conex = mysql.createConnection ({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'book-nook-bd',
+    database: 'libreria_bd',
     port: 3306
 })
 
