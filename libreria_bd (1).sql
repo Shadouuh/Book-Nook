@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-10-2024 a las 16:04:03
+-- Tiempo de generación: 08-10-2024 a las 19:00:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -104,26 +104,6 @@ INSERT INTO `categorias` (`id_categoria`, `nombre`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `clave_libro`
---
-
-CREATE TABLE `clave_libro` (
-  `id_clave` int(11) NOT NULL,
-  `token` varchar(255) DEFAULT NULL,
-  `id_libro` int(11) DEFAULT NULL,
-  `id_usuario` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
-
---
--- Volcado de datos para la tabla `clave_libro`
---
-
-INSERT INTO `clave_libro` (`id_clave`, `token`, `id_libro`, `id_usuario`) VALUES
-(2, 'kdsnflkdsnfnsdknfsdlkfksdfknsdkfdsfnlksnkfnlksnflsnlknflknslkfn', 3, 1);
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `editoriales`
 --
 
@@ -168,19 +148,6 @@ INSERT INTO `libros` (`id_libro`, `titulo`, `descripcion`, `precio`, `stock`, `e
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `libros_imgs`
---
-
-CREATE TABLE `libros_imgs` (
-  `id_libro_img` int(11) NOT NULL,
-  `archivo` varchar(255) DEFAULT NULL,
-  `tipo_angulo` enum('adelante','atras','adentro') DEFAULT NULL,
-  `id_libro` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `libro_categoria`
 --
 
@@ -201,6 +168,46 @@ INSERT INTO `libro_categoria` (`id_lc`, `id_libro`, `id_categoria`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `libro_clave`
+--
+
+CREATE TABLE `libro_clave` (
+  `id_clave` int(11) NOT NULL,
+  `token` varchar(255) DEFAULT NULL,
+  `id_libro` int(11) DEFAULT NULL,
+  `id_usuario` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `libro_clave`
+--
+
+INSERT INTO `libro_clave` (`id_clave`, `token`, `id_libro`, `id_usuario`) VALUES
+(2, 'kdsnflkdsnfnsdknfsdlkfksdfknsdkfdsfnlksnkfnlksnflsnlknflknslkfn', 3, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `libro_imgs`
+--
+
+CREATE TABLE `libro_imgs` (
+  `id_libro_img` int(11) NOT NULL,
+  `archivo` varchar(255) DEFAULT NULL,
+  `tipo_angulo` enum('adelante','atras','adentro') DEFAULT NULL,
+  `id_libro` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `libro_imgs`
+--
+
+INSERT INTO `libro_imgs` (`id_libro_img`, `archivo`, `tipo_angulo`, `id_libro`) VALUES
+(1, 'santi.png', 'adelante', 3);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `login`
 --
 
@@ -208,7 +215,7 @@ CREATE TABLE `login` (
   `id_login` int(11) NOT NULL,
   `email` varchar(100) DEFAULT NULL,
   `telefono` varchar(15) DEFAULT NULL,
-  `clave` varchar(50) DEFAULT NULL,
+  `clave` varchar(256) DEFAULT NULL,
   `tipo` enum('super_admin','cliente','encargado','empleado','repatidor') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
@@ -217,7 +224,48 @@ CREATE TABLE `login` (
 --
 
 INSERT INTO `login` (`id_login`, `email`, `telefono`, `clave`, `tipo`) VALUES
-(1, 'juancottier0@gmail.com', '115655654', '1234', 'super_admin');
+(1, 'juancottier0@gmail.com', '', '1234', 'super_admin'),
+(9, 'juanescolar0@gmail.com', 'undefined', 'dd9LJ2akb70yF4sZX849l2MmZd9CX3exYf3Kv6Dssq6YK3frPx7yF2rHHr2Fy7xPrf3KY6qssD6vK3fYxe3XC9dZmM2l948XZs4Fy07bka2JL9dd', 'cliente'),
+(10, 'palateo8567@gmail.com', NULL, 'i79yU4dZb809F2smid9CU3dxVD1vC3oYHs2Fy0xbOb6vv6bObx0yF2sHYo3Cv1DVxd3UC9dims2F908bZd4Uy97i', 'cliente');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `mentores`
+--
+
+CREATE TABLE `mentores` (
+  `id_mentor` int(11) NOT NULL,
+  `nombre` varchar(50) DEFAULT NULL,
+  `apellido` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `mentores`
+--
+
+INSERT INTO `mentores` (`id_mentor`, `nombre`, `apellido`) VALUES
+(1, 'Cottier', 'Juan');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `mentor_frase`
+--
+
+CREATE TABLE `mentor_frase` (
+  `id_mf` int(11) NOT NULL,
+  `frase` text DEFAULT NULL,
+  `id_mentor` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `mentor_frase`
+--
+
+INSERT INTO `mentor_frase` (`id_mf`, `frase`, `id_mentor`) VALUES
+(1, 'A veces la vida es la vida y aveces la mama de santi...', 1),
+(2, 'El tonto, programa en python, el habil, en php y el inteligente en node', 1);
 
 -- --------------------------------------------------------
 
@@ -358,14 +406,6 @@ ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id_categoria`);
 
 --
--- Indices de la tabla `clave_libro`
---
-ALTER TABLE `clave_libro`
-  ADD PRIMARY KEY (`id_clave`),
-  ADD KEY `id_usuario` (`id_usuario`),
-  ADD KEY `id_libro` (`id_libro`);
-
---
 -- Indices de la tabla `editoriales`
 --
 ALTER TABLE `editoriales`
@@ -380,13 +420,6 @@ ALTER TABLE `libros`
   ADD KEY `id_autor` (`id_autor`);
 
 --
--- Indices de la tabla `libros_imgs`
---
-ALTER TABLE `libros_imgs`
-  ADD PRIMARY KEY (`id_libro_img`),
-  ADD KEY `id_libro` (`id_libro`);
-
---
 -- Indices de la tabla `libro_categoria`
 --
 ALTER TABLE `libro_categoria`
@@ -395,12 +428,39 @@ ALTER TABLE `libro_categoria`
   ADD KEY `id_categoria` (`id_categoria`);
 
 --
+-- Indices de la tabla `libro_clave`
+--
+ALTER TABLE `libro_clave`
+  ADD PRIMARY KEY (`id_clave`),
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `id_libro` (`id_libro`);
+
+--
+-- Indices de la tabla `libro_imgs`
+--
+ALTER TABLE `libro_imgs`
+  ADD PRIMARY KEY (`id_libro_img`),
+  ADD KEY `id_libro` (`id_libro`);
+
+--
 -- Indices de la tabla `login`
 --
 ALTER TABLE `login`
   ADD PRIMARY KEY (`id_login`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `telefono` (`telefono`);
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indices de la tabla `mentores`
+--
+ALTER TABLE `mentores`
+  ADD PRIMARY KEY (`id_mentor`);
+
+--
+-- Indices de la tabla `mentor_frase`
+--
+ALTER TABLE `mentor_frase`
+  ADD PRIMARY KEY (`id_mf`),
+  ADD KEY `id_mentor` (`id_mentor`);
 
 --
 -- Indices de la tabla `pedidos`
@@ -470,12 +530,6 @@ ALTER TABLE `categorias`
   MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de la tabla `clave_libro`
---
-ALTER TABLE `clave_libro`
-  MODIFY `id_clave` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
 -- AUTO_INCREMENT de la tabla `editoriales`
 --
 ALTER TABLE `editoriales`
@@ -488,22 +542,40 @@ ALTER TABLE `libros`
   MODIFY `id_libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT de la tabla `libros_imgs`
---
-ALTER TABLE `libros_imgs`
-  MODIFY `id_libro_img` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `libro_categoria`
 --
 ALTER TABLE `libro_categoria`
   MODIFY `id_lc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT de la tabla `libro_clave`
+--
+ALTER TABLE `libro_clave`
+  MODIFY `id_clave` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `libro_imgs`
+--
+ALTER TABLE `libro_imgs`
+  MODIFY `id_libro_img` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT de la tabla `login`
 --
 ALTER TABLE `login`
-  MODIFY `id_login` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_login` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT de la tabla `mentores`
+--
+ALTER TABLE `mentores`
+  MODIFY `id_mentor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `mentor_frase`
+--
+ALTER TABLE `mentor_frase`
+  MODIFY `id_mf` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `pedidos`
@@ -553,13 +625,6 @@ ALTER TABLE `carrito_items`
   ADD CONSTRAINT `carrito_items_ibfk_2` FOREIGN KEY (`id_libro`) REFERENCES `libros` (`id_libro`) ON DELETE CASCADE;
 
 --
--- Filtros para la tabla `clave_libro`
---
-ALTER TABLE `clave_libro`
-  ADD CONSTRAINT `clave_libro_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
-  ADD CONSTRAINT `clave_libro_ibfk_2` FOREIGN KEY (`id_libro`) REFERENCES `libros` (`id_libro`) ON DELETE CASCADE;
-
---
 -- Filtros para la tabla `libros`
 --
 ALTER TABLE `libros`
@@ -567,17 +632,30 @@ ALTER TABLE `libros`
   ADD CONSTRAINT `libros_ibfk_2` FOREIGN KEY (`id_autor`) REFERENCES `autores` (`id_autor`) ON DELETE CASCADE;
 
 --
--- Filtros para la tabla `libros_imgs`
---
-ALTER TABLE `libros_imgs`
-  ADD CONSTRAINT `libros_imgs_ibfk_1` FOREIGN KEY (`id_libro`) REFERENCES `libros` (`id_libro`) ON DELETE CASCADE;
-
---
 -- Filtros para la tabla `libro_categoria`
 --
 ALTER TABLE `libro_categoria`
   ADD CONSTRAINT `libro_categoria_ibfk_1` FOREIGN KEY (`id_libro`) REFERENCES `libros` (`id_libro`) ON DELETE CASCADE,
   ADD CONSTRAINT `libro_categoria_ibfk_2` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id_categoria`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `libro_clave`
+--
+ALTER TABLE `libro_clave`
+  ADD CONSTRAINT `libro_clave_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
+  ADD CONSTRAINT `libro_clave_ibfk_2` FOREIGN KEY (`id_libro`) REFERENCES `libros` (`id_libro`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `libro_imgs`
+--
+ALTER TABLE `libro_imgs`
+  ADD CONSTRAINT `libro_imgs_ibfk_1` FOREIGN KEY (`id_libro`) REFERENCES `libros` (`id_libro`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `mentor_frase`
+--
+ALTER TABLE `mentor_frase`
+  ADD CONSTRAINT `mentor_frase_ibfk_1` FOREIGN KEY (`id_mentor`) REFERENCES `mentores` (`id_mentor`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `pedidos`

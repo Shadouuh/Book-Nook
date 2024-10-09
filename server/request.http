@@ -18,21 +18,20 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/api/login/3 HTTP/1.1
+DELETE http://localhost:3000/api/login/11 HTTP/1.1
 
 ###
 
-PUT http://localhost:3000/api/libros/1 HTTP/1.1
+PUT http://localhost:3000/api/libros/6 HTTP/1.1
 Content-Type: application/json
 
 {
-    "id_libro": 1,
-    "titulo": "2 veces junio",
-    "descripcion": "Argentina resumen",
-    "precio": 11000,
-    "stock": 15,
-    "es_fisico": 1,
-    "fecha_publicacion": "2002-01-01T03:00:00.000Z",
+    "titulo": "NADA",
+    "descripcion": "Adolecencia resumen",
+    "precio": 0,
+    "stock": 0,
+    "es_fisico": 0,
+    "fecha_publicacion": "2000-01-01T03:00:00.000Z",
     "id_editorial": 1,
     "id_autor": 1
 }
@@ -69,7 +68,10 @@ Content-Type: application/json
 POST http://localhost:3000/register
 Content-Type: application/json
 
-{
-    "email": "palateo8567@gmail.com",
-    "clave": "lolmejor123"
+{ 
+    "user": {
+        "email": "teresita@hotmail.com",
+        "telefono": "113254769801",
+        "clave": "megustasanti321"
+    }
 }
