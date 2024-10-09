@@ -1,10 +1,9 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon app"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +13,8 @@
     "cors": "^2.8.5",
     "express": "^4.21.0",
     "mysql2": "^3.11.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
   }
 }
