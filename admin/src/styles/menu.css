@@ -1,0 +1,89 @@
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdownButton {
+  background-color: transparent;
+  border-radius: 99999999px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: ease-in-out 0.3s;
+}
+
+.dropdownMenu {
+  position: absolute;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-width: 160px;
+  z-index: 1;
+  right: 0;
+  border: solid 1px #02020a;
+}
+.dropdownMenu li {
+  padding: 12px 16px;
+  border: solid 1px transparent;
+  transition: ease-in-out 0.2s;
+}
+
+.dropdownMenu li a {
+  text-decoration: none;
+  color: black;
+  display: block;
+}
+
+.dropdownMenu li:hover {
+  background-color: #f1f1f1;
+  border: solid 1px #02020a;
+  border-radius: 20px;
+}
+
+.dropdownButton:hover {
+  transform: scale(1.04);
+  transform: rotate(35deg);
+}
+.tableDrop {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+  min-width: 180px;
+  z-index: 1;
+  border: solid 1px #d1d1d1;
+  transition: all 0.3s ease;
+}
+
+.tableDrop li {
+  padding: 10px 20px;
+  border: solid 1px transparent;
+  transition:
+    background-color 0.2s ease,
+    border 0.2s ease;
+  font-size: 14px;
+}
+
+.tableDrop li a {
+  text-decoration: none;
+  color: #333333;
+  font-weight: 500;
+  display: block;
+  transition: color 0.2s ease;
+}
+
+.tableDrop li:hover {
+  background-color: #eaeaea;
+  border: solid 1px #02020a;
+  border-radius: 8px;
+}
+
+.tableDrop li:hover a {
+  color: #02020a;
+}

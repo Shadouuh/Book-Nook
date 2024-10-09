@@ -1,0 +1,142 @@
+@font-face {
+  font-family: "Montserrat";
+  src: url(../src/assets/fonts/Montserrat-VariableFont_wght.ttf);
+}
+
+* {
+  font-family: "Montserrat";
+  color: #fffbfa;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.adminBody {
+  display: flex;
+  height: fit-content;
+  width: fit-content;
+  min-height: 200vh;
+  min-width: 100%;
+  background-color: #aea4bf;
+}
+
+.adminMain {
+  width: 80vw;
+}
+
+nav,
+.sidebar {
+  background-color: #02020af4;
+}
+
+nav {
+  display: flex;
+  height: 15vh;
+  width: 100%;
+  padding: 2vw;
+  justify-content: space-between;
+  align-items: center;
+}
+ul img {
+  height: 6vh;
+  margin: 10px;
+}
+hr {
+  border-top: 1px solid #e0e0e0;
+  margin: 20px 0;
+  width: 50%;
+}
+
+.sidebar {
+  display: flex;
+  border-right: dashed 4px white;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px;
+  width: 20vw;
+  height: 200vh;
+}
+
+.user {
+  text-align: center;
+}
+
+.user h1 {
+  font-size: 2rem;
+  color: #fffbfa;
+}
+.user h4 {
+  padding: 20px;
+  font-size: 1rem;
+  color: #ffe787;
+}
+
+button,
+.btnTable {
+  background-color: #2d3142;
+  color: #f7f7ff;
+  border: none;
+  padding: 14px 18px;
+  font-weight: 600;
+  margin: 12px 0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border-radius: 10px;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar button:hover,
+.btnTable:hover {
+  background: linear-gradient(45deg, #d7263d, #8f2d56);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+button:active,
+.btnTable:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 135vh;
+  min-width: 80vw;
+  padding: 40px;
+}
+
+main h1 {
+  color: black;
+}
+
+/* Animaciones */
+
+.campana:hover {
+  animation: campana 0.5s ease-in-out forwards;
+}
+
+@keyframes campana {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(30deg);
+  }
+  50% {
+    transform: rotate(-30deg);
+  }
+  80% {
+    transform: rotate(13deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}

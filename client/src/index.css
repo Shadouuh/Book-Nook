@@ -1,0 +1,25 @@
+@font-face {
+  font-family: "Montserrat";
+  src: url(assets/fonts/Montserrat-VariableFont_wght.ttf);
+}
+* {
+  font-family: "Montserrat";
+  color: #fffbfa;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: url("./assets/images/CofeeBookBG.png");
+  height: fit-content;
+  background-size: cover;
+  object-fit: cover;
+}
+main {
+  display: flex;
+  flex-direction: column;
+  min-height: 75vh;
+  height: fit-content;
+  padding: 5vh 0;
+  justify-content: center;
+  align-items: center;
+}

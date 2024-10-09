@@ -1,0 +1,41 @@
+a {
+  font-weight: 500;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin: 2px;
+}
+nav {
+  background-color: #02020af4;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 5px 0px;
+}
+.navImg {
+  height: 10vh;
+}
+.configs {
+  display: flex;
+}
+.menuImg {
+  height: 5vh;
+}
+.navTitle {
+  display: flex;
+  align-items: center;
+}
+.active {
+  background-color: #040f16;
+  border: solid 2px #fffbfa;
+  transition: ease 0.3s;
+}
+.active:hover {
+  background-color: #02020a;
+}
+.colorH1 {
+  color: #ffd670;
+}
+h1 {
+  display: flex;
+}

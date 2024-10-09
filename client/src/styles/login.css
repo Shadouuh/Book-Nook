@@ -1,0 +1,108 @@
+.form {
+  width: 75vw;
+  min-height: 70vh;
+  height: fit-content;
+  display: flex;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 50px;
+  overflow: hidden;
+  transition: 0.3s ease-in-out;
+}
+.loginForm hr {
+  border: none;
+  border-top: 2px solid rgba(0, 0, 0, 0.839);
+  width: 70%;
+  margin: 20px 0;
+}
+.loginForm a {
+  color: rgba(0, 0, 0, 0.815);
+  font-size: smaller;
+  text-decoration: underline;
+}
+.loginForm {
+  padding: 40px;
+  width: 60%;
+  border-radius: 0 50px 50px 0;
+  background-color: #fffbfa;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
+}
+
+.loginForm h1,
+.loginForm h4 {
+  color: #333;
+  padding: 10px 0px;
+  transition: color 0.3s ease;
+}
+
+.changeForm {
+  border-radius: 50px 0 0 50px;
+  width: 40%;
+  background: linear-gradient(135deg, #02020af4, #353535);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  padding: 2rem;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.changeForm:hover {
+  background-color: #1c1c1c;
+}
+
+.changeForm button {
+  background-color: #ffafcc;
+  border: none;
+  padding: 10px 20px;
+  margin: 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.changeForm button:hover {
+  background-color: #ff6b81;
+}
+
+input {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  width: 50%;
+  color: black;
+  margin-bottom: 10px;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  border-color: #ffafcc;
+  outline: none;
+}
+
+.loginForm button {
+  background-color: #ffafcc;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.loginForm button:hover {
+  background-color: #ff6b81;
+}
+
+.rows {
+  display: flex;
+  gap: 1rem;
+}
