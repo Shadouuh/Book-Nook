@@ -59,17 +59,17 @@
   background-color: #1c1c1c;
 }
 
-.changeForm button {
+.changeForm button, .button {
   background-color: #ffafcc;
   border: none;
   padding: 10px 20px;
   margin: 20px;
-  border-radius: 30px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.changeForm button:hover {
+.changeForm button:hover, .button:hover{
   background-color: #ff6b81;
 }
 

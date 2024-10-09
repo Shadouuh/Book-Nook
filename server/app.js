@@ -34,7 +34,10 @@ app.post('/login', (req, res) => {
 
 // Register
 app.post('/register', (req, res) => {
-    let { email, telefono, clave } = req.body;
+    const { user } = req.body;
+    email = user.email;
+    clave = user.clave;
+    tel = user.telefono;
     clave = anju.encrypt(clave);
 
     const query = "INSERT INTO login(email, telefono, clave, tipo) VALUES(?, ?, ?, 'cliente')";
