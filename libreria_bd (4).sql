@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-10-2024 a las 19:00:46
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Tiempo de generación: 11-10-2024 a las 23:10:01
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -118,6 +118,36 @@ CREATE TABLE `editoriales` (
 
 INSERT INTO `editoriales` (`id_editorial`, `nombre`) VALUES
 (1, 'De bolsillo');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `empleados`
+--
+
+CREATE TABLE `empleados` (
+  `id_empleado` int(11) NOT NULL,
+  `dni` varchar(15) DEFAULT NULL,
+  `nombre` varchar(50) DEFAULT NULL,
+  `apellido` varchar(50) DEFAULT NULL,
+  `area` varchar(50) DEFAULT NULL,
+  `id_sede` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `encargados`
+--
+
+CREATE TABLE `encargados` (
+  `id_encargado` int(11) NOT NULL,
+  `dni` varchar(15) DEFAULT NULL,
+  `nombre` varchar(50) DEFAULT NULL,
+  `apellido` varchar(50) DEFAULT NULL,
+  `area` varchar(50) DEFAULT NULL,
+  `id_sede` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
 -- --------------------------------------------------------
 
@@ -294,6 +324,17 @@ INSERT INTO `pedidos` (`id_pedido`, `total`, `estado`, `fecha_estimada`, `fecha_
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `sedes`
+--
+
+CREATE TABLE `sedes` (
+  `id_sede` int(11) NOT NULL,
+  `localidad` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `usuarios`
 --
 
@@ -318,39 +359,39 @@ INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `direccion`, `fecha_
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `usuario_autor_favorito`
+-- Estructura de tabla para la tabla `usuario_autor`
 --
 
-CREATE TABLE `usuario_autor_favorito` (
+CREATE TABLE `usuario_autor` (
   `id_uaf` int(11) NOT NULL,
   `id_usuario` int(11) DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 --
--- Volcado de datos para la tabla `usuario_autor_favorito`
+-- Volcado de datos para la tabla `usuario_autor`
 --
 
-INSERT INTO `usuario_autor_favorito` (`id_uaf`, `id_usuario`, `id_autor`) VALUES
+INSERT INTO `usuario_autor` (`id_uaf`, `id_usuario`, `id_autor`) VALUES
 (1, 1, 1);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `usuario_categoria_favorita`
+-- Estructura de tabla para la tabla `usuario_categoria`
 --
 
-CREATE TABLE `usuario_categoria_favorita` (
+CREATE TABLE `usuario_categoria` (
   `id_usf` int(11) NOT NULL,
   `id_usuario` int(11) DEFAULT NULL,
   `id_categoria` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 --
--- Volcado de datos para la tabla `usuario_categoria_favorita`
+-- Volcado de datos para la tabla `usuario_categoria`
 --
 
-INSERT INTO `usuario_categoria_favorita` (`id_usf`, `id_usuario`, `id_categoria`) VALUES
+INSERT INTO `usuario_categoria` (`id_usf`, `id_usuario`, `id_categoria`) VALUES
 (1, 1, 1);
 
 -- --------------------------------------------------------
@@ -412,6 +453,20 @@ ALTER TABLE `editoriales`
   ADD PRIMARY KEY (`id_editorial`);
 
 --
+-- Indices de la tabla `empleados`
+--
+ALTER TABLE `empleados`
+  ADD PRIMARY KEY (`id_empleado`),
+  ADD KEY `id_sede` (`id_sede`);
+
+--
+-- Indices de la tabla `encargados`
+--
+ALTER TABLE `encargados`
+  ADD PRIMARY KEY (`id_encargado`),
+  ADD KEY `id_sede` (`id_sede`);
+
+--
 -- Indices de la tabla `libros`
 --
 ALTER TABLE `libros`
@@ -471,6 +526,12 @@ ALTER TABLE `pedidos`
   ADD KEY `id_carrito` (`id_carrito`);
 
 --
+-- Indices de la tabla `sedes`
+--
+ALTER TABLE `sedes`
+  ADD PRIMARY KEY (`id_sede`);
+
+--
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
@@ -478,17 +539,17 @@ ALTER TABLE `usuarios`
   ADD KEY `id_login` (`id_login`);
 
 --
--- Indices de la tabla `usuario_autor_favorito`
+-- Indices de la tabla `usuario_autor`
 --
-ALTER TABLE `usuario_autor_favorito`
+ALTER TABLE `usuario_autor`
   ADD PRIMARY KEY (`id_uaf`),
   ADD UNIQUE KEY `id_usuario` (`id_usuario`,`id_autor`),
   ADD KEY `id_autor` (`id_autor`);
 
 --
--- Indices de la tabla `usuario_categoria_favorita`
+-- Indices de la tabla `usuario_categoria`
 --
-ALTER TABLE `usuario_categoria_favorita`
+ALTER TABLE `usuario_categoria`
   ADD PRIMARY KEY (`id_usf`),
   ADD KEY `id_usuario` (`id_usuario`),
   ADD KEY `id_categoria` (`id_categoria`);
@@ -534,6 +595,18 @@ ALTER TABLE `categorias`
 --
 ALTER TABLE `editoriales`
   MODIFY `id_editorial` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `empleados`
+--
+ALTER TABLE `empleados`
+  MODIFY `id_empleado` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `encargados`
+--
+ALTER TABLE `encargados`
+  MODIFY `id_encargado` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `libros`
@@ -584,21 +657,27 @@ ALTER TABLE `pedidos`
   MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT de la tabla `sedes`
+--
+ALTER TABLE `sedes`
+  MODIFY `id_sede` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
   MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla `usuario_autor_favorito`
+-- AUTO_INCREMENT de la tabla `usuario_autor`
 --
-ALTER TABLE `usuario_autor_favorito`
+ALTER TABLE `usuario_autor`
   MODIFY `id_uaf` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla `usuario_categoria_favorita`
+-- AUTO_INCREMENT de la tabla `usuario_categoria`
 --
-ALTER TABLE `usuario_categoria_favorita`
+ALTER TABLE `usuario_categoria`
   MODIFY `id_usf` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
@@ -623,6 +702,18 @@ ALTER TABLE `carrito`
 ALTER TABLE `carrito_items`
   ADD CONSTRAINT `carrito_items_ibfk_1` FOREIGN KEY (`id_carrito`) REFERENCES `carrito` (`id_carrito`) ON DELETE CASCADE,
   ADD CONSTRAINT `carrito_items_ibfk_2` FOREIGN KEY (`id_libro`) REFERENCES `libros` (`id_libro`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `empleados`
+--
+ALTER TABLE `empleados`
+  ADD CONSTRAINT `empleados_ibfk_1` FOREIGN KEY (`id_sede`) REFERENCES `sedes` (`id_sede`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `encargados`
+--
+ALTER TABLE `encargados`
+  ADD CONSTRAINT `encargados_ibfk_1` FOREIGN KEY (`id_sede`) REFERENCES `sedes` (`id_sede`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `libros`
@@ -671,18 +762,18 @@ ALTER TABLE `usuarios`
   ADD CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`id_login`) REFERENCES `login` (`id_login`) ON DELETE CASCADE;
 
 --
--- Filtros para la tabla `usuario_autor_favorito`
+-- Filtros para la tabla `usuario_autor`
 --
-ALTER TABLE `usuario_autor_favorito`
-  ADD CONSTRAINT `usuario_autor_favorito_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `usuario_autor_favorito_ibfk_2` FOREIGN KEY (`id_autor`) REFERENCES `autores` (`id_autor`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `usuario_autor`
+  ADD CONSTRAINT `usuario_autor_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `usuario_autor_ibfk_2` FOREIGN KEY (`id_autor`) REFERENCES `autores` (`id_autor`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `usuario_categoria_favorita`
+-- Filtros para la tabla `usuario_categoria`
 --
-ALTER TABLE `usuario_categoria_favorita`
-  ADD CONSTRAINT `usuario_categoria_favorita_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
-  ADD CONSTRAINT `usuario_categoria_favorita_ibfk_2` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id_categoria`) ON DELETE CASCADE;
+ALTER TABLE `usuario_categoria`
+  ADD CONSTRAINT `usuario_categoria_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
+  ADD CONSTRAINT `usuario_categoria_ibfk_2` FOREIGN KEY (`id_categoria`) REFERENCES `categorias` (`id_categoria`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `usuario_libro`

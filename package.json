@@ -7,7 +7,7 @@
     "server"
   ],
   "scripts": {
-    "start": "node server/app.js",
+    "dev": "nodemon server/app",
     "client": "npm --prefix client run dev",
     "admin": "npm --prefix admin run dev",
     "build": "npm --prefix client run build"
@@ -20,9 +20,11 @@
     "eslint": "^9.12.0",
     "express": "^4.21.0",
     "framer-motion": "^11.11.4",
+    "mysql2": "^3.11.3",
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
+    "nodemon": "^3.1.7",
     "prettier": "3.3.3"
   }
 }

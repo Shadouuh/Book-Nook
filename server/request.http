@@ -6,14 +6,16 @@ POST http://localhost:3000/api/libros
 Content-Type: application/json
 
 {
-    "titulo": "libro falso",
-    "descripcion": "Como todo en la vida esto no es mas que una simple ilusion",
-    "precio": 2000,
-    "stock": 1,
-    "es_fisico": 0,
-    "fecha_publicacion": "2001-09-11T03:00:00.000Z",
-    "id_editorial": 1,
-    "id_autor": 1
+    "dates": {
+        "titulo": "libro falso",
+        "descripcion": "Como todo en la vida esto no es mas que una simple ilusion",
+        "precio": 2000,
+        "stock": 1,
+        "es_fisico": 0,
+        "fecha_publicacion": "2001-09-11T03:00:00.000Z",
+        "id_editorial": 1,
+        "id_autor": 1
+    }
 }
 
 ###
@@ -22,18 +24,20 @@ DELETE http://localhost:3000/api/login/11 HTTP/1.1
 
 ###
 
-PUT http://localhost:3000/api/libros/6 HTTP/1.1
+PUT http://localhost:3000/api/libros/11 HTTP/1.1
 Content-Type: application/json
 
 {
-    "titulo": "NADA",
-    "descripcion": "Adolecencia resumen",
-    "precio": 0,
-    "stock": 0,
-    "es_fisico": 0,
-    "fecha_publicacion": "2000-01-01T03:00:00.000Z",
-    "id_editorial": 1,
-    "id_autor": 1
+    "dates": {
+        "titulo": "NADA",
+        "descripcion": "Adolecencia resumen",
+        "precio": 0,
+        "stock": 0,
+        "es_fisico": 0,
+        "fecha_publicacion": "2000-01-01T03:00:00.000Z",
+        "id_editorial": 1,
+        "id_autor": 1
+    }
 }
 
 ###
@@ -76,5 +80,17 @@ Content-Type: application/json
         "email": "teresita@hotmail.com",
         "telefono": "113254769801",
         "clave": "megustasanti321"
+    }
+}
+
+###
+
+POST http://localhost:3000/api/libros/guardar 
+Content-Type: application/json
+
+{
+    "save": {
+        "id_libro": 1,
+        "id_usuario": 1
     }
 }
