@@ -94,3 +94,15 @@ Content-Type: application/json
         "id_usuario": 1
     }
 }
+
+###
+
+POST http://localhost:3000/api/categorias/guardar
+Content-Type: application/json
+
+{
+    "save": {
+        "id_categoria": 2,
+        "id_usuario": 1
+    }
+}

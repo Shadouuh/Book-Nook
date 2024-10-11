@@ -63,6 +63,49 @@ app.post('/api/libros/guardar', (req, res) => {
     });
 });
 
+//Save autor
+app.post('/api/autores/guardar', (req, res) => {
+    const { save } = req.body;
+
+    const query = `INSERT INTO autores(id_autor, id_usuario) VALUES('${save.id_autor}', '${save.id_usuario}')`;
+
+    conex.query(query, (err, results) => {
+        if (err) {
+            res.status(500).send({ message: 'Error al guardar autor favorito' });
+        } else res.status(201).send({ message: 'Se guardo el autor como favorito' });
+    });
+});
+
+
+
+
+// !!!!!!!! JUAN DEBES COMPROBAR QUE LAS COSAS NO ESTEN GUARDAS DE ANTE MANO
+
+
+
+
+//Save category
+app.post('/api/categorias/guardar', (req, res) => {
+    const { save } = req.body;
+    const verifi = `SELECT id_uc FROM usuario_categoria WHERE id_categoria = '${save.id_categoria}' AND  id_usuario = '${save.id_usuario}'`;
+
+    conex.query(verifi, (err, result) => {
+        if (err) {
+            res.status(500).send({ message: 'Error en la consulta de verificación' });
+        } else if (result.affectedRows != 0) {
+            res.status(500).send({ message: 'La categoria ya esta guardada' });
+        } else {
+            const query = `INSERT INTO usuario_categoria(id_categoria, id_usuario) VALUES('${save.id_categoria}', '${save.id_usuario}')`;
+
+            conex.query(query, (err, results) => {
+                if (err) {
+                    res.status(500).send({ message: 'Error al guardar categoria favorita' });
+                } else res.status(201).send({ message: 'Se guardo la categoria como favorita' });
+            });
+        }
+    });
+});
+
 //Select by id
 app.get('/api/:tabla/:id', (req, res) => {
     const { tabla, id } = req.params;
@@ -75,7 +118,7 @@ app.get('/api/:tabla/:id', (req, res) => {
         const columnas = result.map(col => col.Field);
 
         result.map(function (col) {
-            if (col.Key == "PRI") primary = col.Field;
+            if (col.Key == 'PRI') primary = col.Field;
         });
 
         const query = `SELECT * FROM ${tabla} WHERE ${primary} = ${id}`;
