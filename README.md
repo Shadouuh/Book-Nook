@@ -37,3 +37,6 @@
 *DELETE*
 **DELETE** /api/:tabla/:id
 **Devuelve:** un mensaje de confimacion en donde se el ${:id} especifica del elemento eliminado de la ${:tabla}
+
+### HAY UN PROBLEMA CON EL LOGIN
+el telefono no puede repetirse, pero si el usuario no quiere poner telefono entonces quedara como 'null' pero si ya otro usuario ya tienen 'null' en su telefono entonces se repite, asi que en la base de datos no puede ser 'unique'

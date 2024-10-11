@@ -19,14 +19,17 @@ app.use(cors());
 
 //LOGIN
 app.post('/login', (req, res) => {
-    let { email, clave } = req.body;
-    clave = anju.encrypt(clave);
-    const query = "SELECT id_login, tipo FROM login WHERE email=? AND clave=?";
+    const {user} = req.body;
+    const clave = anju.encrypt(user.clave);
+    const query = "SELECT id_login, tipo FROM login WHERE email=? OR telefono=? AND clave=?";
 
-    conex.query(query, [email, clave], (err, results) => {
-        if (err || results == "") {
-            res.status(401).send({ message: 'Credenciales incorrectas' });
-        } else {
+    conex.query(query, [user.email, user.telefono,clave], (err, results) => {
+        if (err) {
+            res.status(401).send({ message: 'Error en el login' });
+        }else if(results == "") {
+            res.send({message: 'Credenciales incorrectas'});
+        } 
+        else {
             res.send({ resultado: results });
             console.log('Se logeo correctamente');
         };
@@ -36,7 +39,7 @@ app.post('/login', (req, res) => {
 //Register
 app.post('/register', (req, res) => {
     const {user} = req.body;
-    clave = anju.encrypt(user.clave);
+    const clave = anju.encrypt(user.clave);
 
     const query = "INSERT INTO login(email, telefono, clave, tipo) VALUES(?, ?, ?, 'cliente')";
 
@@ -49,14 +52,14 @@ app.post('/register', (req, res) => {
 
 //Save book
 app.post('/api/libros/guardar', (req, res) => {
-    const { id_libro, id_usuario } = req.body;
+    const { libro_guardar } = req.body;
 
-    const query = `INSERT INTO usuario_libro(estado_lectura, es_favorito, id_libro, id_usuario) VALUES('', '', '${id_libro}', '${id_usuario}')`;
+    const query = `INSERT INTO usuario_libro(estado_lectura, es_favorito, id_libro, id_usuario) VALUES('', '', '${libro_guardar.id_libro}', '${libro_guardar.id_usuario}')`;
 
     conex.query(query, (err, results) => {
         if (err) {
             res.status(500).send({ message: 'Error al guardar libro' });
-        } else res.send({ message: 'Se guardo libro correctamente' });
+        } else res.status(201).send({ message: 'Se guardo libro correctamente' });
     });
 });
 
@@ -92,8 +95,7 @@ app.get('/api/:tabla', (req, res) => {
 
     conex.query(query, (err, results) => {
         if (err) {
-            console.error('Error al mostrar', err);
-            res.status(500).send('Error en la consulta');
+            res.status(500).send({message: 'Error en la consulta'});
         } else res.send({ resultados: results });
     });
 });
@@ -104,7 +106,9 @@ app.post('/api/:tabla', (req, res) => {
 
     const queryDesc = 'DESC ' + tabla;
     conex.query(queryDesc, (err, result) => {
-        if (err) return res.status(500).send('Error al obtener las columnas de la tabla ' + tabla);
+        if (err) return res.status(500).send({message: 'Error al obtener las columnas de la tabla ' + tabla});
+
+        console.log(result);
 
         const columnas = result.map(col => col.Field);
         const valores = columnas.map(col => datos[col]);
@@ -112,9 +116,8 @@ app.post('/api/:tabla', (req, res) => {
         const query = `INSERT INTO ${tabla} (${columnas.join(', ')}) VALUES (${columnas.map(() => '?').join(', ')})`;
 
         conex.query(query, valores, (err, result) => {
-            if (err) return res.status(500).send('Error al insertar los datos');
-
-            res.send({ message: 'Se inserto correctamente en ' + tabla });
+            if (err) return res.status(500).send({message:'Error al insertar los datos'});
+            res.status(201).send({ message: 'Se inserto correctamente en ' + tabla });
         });
     });
 });
@@ -126,7 +129,7 @@ app.put('/api/:tabla/:id', (req, res) => {
 
     const queryDesc = 'DESC ' + tabla;
     conex.query(queryDesc, (err, result) => {
-        if (err) return res.status(500).send('Error al obtener las columnas de la tabla ' + tabla);
+        if (err) return res.status(500).send({message:'Error al obtener las columnas de la tabla ' + tabla});
         const columnas = result.map(col => col.Field);
         const valores = columnas.map(col => datos[col]);
 
@@ -141,11 +144,10 @@ app.put('/api/:tabla/:id', (req, res) => {
 
         conex.query(query, valores, (err, result) => {
             if (err) {
-                console.error('Error al actualizar el elemento:', err);
-                res.status(500).send('Error al actualizar el elemento');
+                res.status(500).send({message: 'Error al actualizar el elemento'});
             } else if (result.affectedRows == 0) {
-                res.status(404).send('elemento no encontrado');
-            } else res.send(`elemento con el ${primary} ${id} actualizado`);
+                res.status(404).send({ message: 'elemento no encontrado'});
+            } else res.status(201).send({ message: `elemento con el ${primary} ${id} actualizado`});
         });
     });
 });
@@ -155,7 +157,7 @@ app.delete('/api/:tabla/:id', (req, res) => {
 
     const queryDesc = 'DESC ' + tabla;
     conex.query(queryDesc, (err, result) => {
-        if (err) return res.status(500).send('Error al obtener las columnas de la tabla ' + tabla);
+        if (err) return res.status(500).send({message: 'Error al obtener las columnas de la tabla ' + tabla});
         result.map(function (col) {
             if (col.Key == "PRI") primary = col.Field;
         });
@@ -163,11 +165,10 @@ app.delete('/api/:tabla/:id', (req, res) => {
 
         conex.query(query, [id], (err, results) => {
             if (err) {
-                console.error('Error al eliminar:', err);
-                res.status(500).send('Error al eliminar');
+                res.status(500).send({message: 'Error al eliminar'});
             } else if (results.affectedRows == 0) {
-                res.status(404).send('elemento con id no encontrado');
-            } else res.send(`Elemento con el ${primary} ${id} eliminado`);
+                res.status(404).send({message: 'elemento con id no encontrado'});
+            } else res.send({message: `Elemento con el ${primary} ${id} eliminado`});
         });
     });
 });

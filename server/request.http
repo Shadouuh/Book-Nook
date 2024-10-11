@@ -58,9 +58,12 @@ GET http://localhost:3000/api/login HTTP/1.1
 POST http://localhost:3000/login
 Content-Type: application/json
 
-{
-    "email": "palateo8567@gmail.com",
-    "clave": "lolmejor123"
+{   
+    "user": {
+        "email": "teresita@hotmail.com",
+        "telefono": "113254769801",
+        "clave": "megustasanti321"
+    }
 }
 
 ###
