@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-10-2024 a las 23:10:01
+-- Tiempo de generación: 12-10-2024 a las 18:08:32
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -256,7 +256,10 @@ CREATE TABLE `login` (
 INSERT INTO `login` (`id_login`, `email`, `telefono`, `clave`, `tipo`) VALUES
 (1, 'juancottier0@gmail.com', '', '1234', 'super_admin'),
 (9, 'juanescolar0@gmail.com', 'undefined', 'dd9LJ2akb70yF4sZX849l2MmZd9CX3exYf3Kv6Dssq6YK3frPx7yF2rHHr2Fy7xPrf3KY6qssD6vK3fYxe3XC9dZmM2l948XZs4Fy07bka2JL9dd', 'cliente'),
-(10, 'palateo8567@gmail.com', NULL, 'i79yU4dZb809F2smid9CU3dxVD1vC3oYHs2Fy0xbOb6vv6bObx0yF2sHYo3Cv1DVxd3UC9dims2F908bZd4Uy97i', 'cliente');
+(10, 'palateo8567@gmail.com', NULL, 'i79yU4dZb809F2smid9CU3dxVD1vC3oYHs2Fy0xbOb6vv6bObx0yF2sHYo3Cv1DVxd3UC9dims2F908bZd4Uy97i', 'cliente'),
+(11, 'teresita@gmail.com', '113254769801', 'Vd1CC3oxH829y2xmQ75yc4zZnk2jT7sFPe7XF9rZZM9lX4eXsf6KK6fsPr7FF7rPsf6KK6fsXe4Xl9MZZr9FX7ePFs7Tj2knZz4cy57Qmx2y928Hxo3CC1dV', 'cliente'),
+(33, 'correo@gmail.com', '', '1234', 'empleado'),
+(50, 'nomorecorreo@gmail.com', NULL, 'Vd1CC3oxH829y2xmQ75yc4zZnk2jT7sFPe7XF9rZZM9lX4eXsf6KK6fsPr7FF7rPsf6KK6fsXe4Xl9MZZr9FX7ePFs7Tj2knZz4cy57Qmx2y928Hxo3CC1dV', 'cliente');
 
 -- --------------------------------------------------------
 
@@ -354,7 +357,8 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `direccion`, `fecha_registro`, `fecha_nacimiento`, `alias`, `id_login`) VALUES
-(1, 'Cuan', 'Gottier', 'Miranda 895', '2024-09-29', '2007-09-04', 'Juanerros', 1);
+(1, 'Cuan', 'Gottier', 'Miranda 895', '2024-09-29', '2007-09-04', 'Juanerros', 1),
+(2, 'Don', 'Roberto', 'Los Pinos 343', '0000-00-00', '2002-01-01', 'Yadou', 50);
 
 -- --------------------------------------------------------
 
@@ -382,16 +386,16 @@ INSERT INTO `usuario_autor` (`id_uaf`, `id_usuario`, `id_autor`) VALUES
 --
 
 CREATE TABLE `usuario_categoria` (
-  `id_usf` int(11) NOT NULL,
-  `id_usuario` int(11) DEFAULT NULL,
-  `id_categoria` int(11) DEFAULT NULL
+  `id_uc` int(11) NOT NULL,
+  `id_categoria` int(11) DEFAULT NULL,
+  `id_usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 --
 -- Volcado de datos para la tabla `usuario_categoria`
 --
 
-INSERT INTO `usuario_categoria` (`id_usf`, `id_usuario`, `id_categoria`) VALUES
+INSERT INTO `usuario_categoria` (`id_uc`, `id_categoria`, `id_usuario`) VALUES
 (1, 1, 1);
 
 -- --------------------------------------------------------
@@ -413,7 +417,8 @@ CREATE TABLE `usuario_libro` (
 --
 
 INSERT INTO `usuario_libro` (`id_ul`, `estado_lectura`, `es_favorito`, `id_libro`, `id_usuario`) VALUES
-(1, 'no empezado', 0, 1, 1);
+(1, 'no empezado', 0, 1, 1),
+(3, '', 0, 1, 1);
 
 --
 -- Índices para tablas volcadas
@@ -550,7 +555,7 @@ ALTER TABLE `usuario_autor`
 -- Indices de la tabla `usuario_categoria`
 --
 ALTER TABLE `usuario_categoria`
-  ADD PRIMARY KEY (`id_usf`),
+  ADD PRIMARY KEY (`id_uc`),
   ADD KEY `id_usuario` (`id_usuario`),
   ADD KEY `id_categoria` (`id_categoria`);
 
@@ -612,7 +617,7 @@ ALTER TABLE `encargados`
 -- AUTO_INCREMENT de la tabla `libros`
 --
 ALTER TABLE `libros`
-  MODIFY `id_libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `libro_categoria`
@@ -636,7 +641,7 @@ ALTER TABLE `libro_imgs`
 -- AUTO_INCREMENT de la tabla `login`
 --
 ALTER TABLE `login`
-  MODIFY `id_login` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_login` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT de la tabla `mentores`
@@ -666,7 +671,7 @@ ALTER TABLE `sedes`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario_autor`
@@ -678,13 +683,13 @@ ALTER TABLE `usuario_autor`
 -- AUTO_INCREMENT de la tabla `usuario_categoria`
 --
 ALTER TABLE `usuario_categoria`
-  MODIFY `id_usf` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_uc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario_libro`
 --
 ALTER TABLE `usuario_libro`
-  MODIFY `id_ul` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_ul` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas
