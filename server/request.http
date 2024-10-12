@@ -20,7 +20,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/api/login/11 HTTP/1.1
+DELETE http://localhost:3000/api/libros/6 HTTP/1.1
 
 ###
 
@@ -42,16 +42,6 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:3000/login
-Content-Type: application/json
-
-{
-    "email": "juancottier0@gmail.com",
-    "clave": "1234"
-}
-
-###
-
 GET http://localhost:3000/api/libros/1 HTTP/1.1
 
 ###
@@ -65,7 +55,6 @@ Content-Type: application/json
 {   
     "user": {
         "email": "teresita@hotmail.com",
-        "telefono": "113254769801",
         "clave": "megustasanti321"
     }
 }
@@ -77,9 +66,13 @@ Content-Type: application/json
 
 { 
     "user": {
-        "email": "teresita@hotmail.com",
-        "telefono": "113254769801",
-        "clave": "megustasanti321"
+        "email": "nomorecorreo@gmail.com",
+        "clave": "megustasanti321",
+        "nombre": "Don",
+        "apellido": "Roberto",
+        "direccion": "Los Pinos 343",
+        "fecha_nacimiento": "2002-01-01",
+        "alias": "Yadou"    
     }
 }
 
@@ -106,3 +99,7 @@ Content-Type: application/json
         "id_usuario": 1
     }
 }
+
+###
+
+GET http://localhost:3000/login/desc HTTP/1.1
