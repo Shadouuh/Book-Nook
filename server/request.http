@@ -1,4 +1,4 @@
-GET http://localhost:3000/api/libros HTTP/1.1
+GET http://localhost:3000/api/usuario_libro HTTP/1.1
 
 ###
 
@@ -102,4 +102,40 @@ Content-Type: application/json
 
 ###
 
+POST http://localhost:3000/api/libros/guardar
+Content-Type: application/json
+
+{
+    "save": {
+        "id_libro": 3,
+        "id_usuario": 1
+    }
+}
+
+###
+
+POST http://localhost:3000/api/autores/guardar
+Content-Type: application/json
+
+{
+    "save": {
+        "id_autor": 2,
+        "id_usuario": 1
+    }
+}
+
+###
+
 GET http://localhost:3000/login/desc HTTP/1.1
+
+###
+
+POST http://localhost:3000/api/libros/cambiarFavorito HTTP/1.1
+Content-Type: application/json
+
+{
+    "save": {
+        "id_libro": 3,
+        "id_usuario": 1
+    }
+}

@@ -50,16 +50,15 @@ app.post('/register', (req, res) => {
 
             conex.query(query, [user.email, user.telefono, clave], (err, results) => {
                 if (err) return res.status(500).send({ message: 'Error al insertar en login', error: err });
-                else { 
+                else {
                     let hoy = new Date().toLocaleDateString();
                     const query2 = `INSERT INTO usuarios(nombre, apellido, direccion, fecha_registro, fecha_nacimiento, alias, id_login) VALUES(?,?,?,'${hoy}' ,?,?, ${results.insertId})`;
-                    conex.query(query2, [user.nombre, user.apellido, user.direccion, user.fecha_nacimiento, user.alias], (err, result)=> {
+                    conex.query(query2, [user.nombre, user.apellido, user.direccion, user.fecha_nacimiento, user.alias], (err, result) => {
                         if (err) return res.status(500).send({ message: 'Error al insertar en usuarios', error: err });
                         else {
-                            res.status(201).send({message: 'Se registro correctamente el usuario'})
+                            res.status(201).send({ message: 'Se registro correctamente el usuario' })
                         }
                     });
-                    console.log(hoy);
                 }
             });
         }
@@ -69,34 +68,59 @@ app.post('/register', (req, res) => {
 //Save book
 app.post('/api/libros/guardar', (req, res) => {
     const { save } = req.body;
+    const verifi = `SELECT id_ul FROM usuario_libro WHERE id_libro = '${save.id_libro}' AND  id_usuario = '${save.id_usuario}'`;
 
-    const query = `INSERT INTO usuario_libro(estado_lectura, es_favorito, id_libro, id_usuario) VALUES('', '', '${save.id_libro}', '${save.id_usuario}')`;
+    conex.query(verifi, (err, result) => {
+        if (err) return res.status(500).send({ message: 'Error en la consulta de verificación', error: err });
+        else if (result != "") {
+            res.status(500).send({ message: 'El libro ya esta guardado' });
+        } else {
+            const query = `INSERT INTO usuario_libro(id_libro, id_usuario) VALUES('${save.id_libro}', '${save.id_usuario}')`;
 
-    conex.query(query, (err, results) => {
-        if (err) return res.status(500).send({ message: 'Error al guardar libro', error: err });
-        else res.status(201).send({ message: 'Se guardo libro correctamente' });
+            conex.query(query, (err, results) => {
+                if (err) return res.status(500).send({ message: 'Error al guardar el libro', error: err });
+                else res.status(201).send({ message: 'Se guardo el libro' });
+            });
+        }
+    });
+});
+
+//Toggle fav book
+app.post('/api/libros/cambiarFavorito', (req, res) => {
+    const { save } = req.body;
+    const verifi = `SELECT es_favorito FROM usuario_libro WHERE id_libro = '${save.id_libro}' AND  id_usuario = '${save.id_usuario}'`;
+
+    conex.query(verifi, (err, result) => {
+        if (err) return res.status(500).send({ message: 'Error en la consulta de verificación', error: err });
+
+        const query = `UPDATE usuario_libro SET es_favorito = ${!result[0].es_favorito} WHERE id_libro = '${save.id_libro}' AND  id_usuario = '${save.id_usuario}'`;
+
+        conex.query(query, (err, results) => {
+            if (err) return res.status(500).send({ message: 'Error al poner como favorito el libro', error: err });
+            else res.status(201).send({ message: 'Se logro hacer lo del libro' });  
+        });
     });
 });
 
 //Save autor
 app.post('/api/autores/guardar', (req, res) => {
     const { save } = req.body;
+    const verifi = `SELECT id_au FROM usuario_autor WHERE id_autor = '${save.id_autor}' AND  id_usuario = '${save.id_usuario}'`;
 
-    const query = `INSERT INTO autores(id_autor, id_usuario) VALUES('${save.id_autor}', '${save.id_usuario}')`;
+    conex.query(verifi, (err, result) => {
+        if (err) return res.status(500).send({ message: 'Error en la consulta de verificación', error: err });
+        else if (result != "") {
+            res.status(500).send({ message: 'El autor ya esta guardado' });
+        } else {
+            const query = `INSERT INTO usuario_autor(id_autor, id_usuario) VALUES('${save.id_autor}', '${save.id_usuario}')`;
 
-    conex.query(query, (err, results) => {
-        if (err) return res.status(500).send({ message: 'Error al guardar autor favorito', error: err });
-        else res.status(201).send({ message: 'Se guardo el autor como favorito' });
+            conex.query(query, (err, results) => {
+                if (err) return res.status(500).send({ message: 'Error al guardar el autor favorito', error: err });
+                else res.status(201).send({ message: 'Se guardo el autor como favorito' });
+            });
+        }
     });
 });
-
-
-
-
-// !!!!!!!! JUAN DEBES COMPROBAR QUE LAS COSAS NO ESTEN GUARDAS DE ANTE MANO
-
-
-
 
 //Save category
 app.post('/api/categorias/guardar', (req, res) => {
@@ -105,7 +129,7 @@ app.post('/api/categorias/guardar', (req, res) => {
 
     conex.query(verifi, (err, result) => {
         if (err) return res.status(500).send({ message: 'Error en la consulta de verificación', error: err });
-        else if (result.affectedRows != 0) {
+        else if (result != "") {
             res.status(500).send({ message: 'La categoria ya esta guardada' });
         } else {
             const query = `INSERT INTO usuario_categoria(id_categoria, id_usuario) VALUES('${save.id_categoria}', '${save.id_usuario}')`;
