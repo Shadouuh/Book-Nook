@@ -88,17 +88,27 @@ app.post('/api/libros/guardar', (req, res) => {
 //Toggle fav book
 app.post('/api/libros/cambiarFavorito', (req, res) => {
     const { save } = req.body;
+    let query;
+
     const verifi = `SELECT es_favorito FROM usuario_libro WHERE id_libro = '${save.id_libro}' AND  id_usuario = '${save.id_usuario}'`;
 
     conex.query(verifi, (err, result) => {
         if (err) return res.status(500).send({ message: 'Error en la consulta de verificación', error: err });
+        else if (result == "") {
+            query = `INSERT INTO usuario_libro(es_favorito, id_libro, id_usuario) VALUES(1, ${save.id_libro}, ${save.id_usuario})`;
 
-        const query = `UPDATE usuario_libro SET es_favorito = ${!result[0].es_favorito} WHERE id_libro = '${save.id_libro}' AND  id_usuario = '${save.id_usuario}'`;
+            conex.query(query, (err, results) => {
+                if (err) return res.status(500).send({ message: 'Error al insertar como favorito el libro', error: err });
+                else res.status(201).send({ message: 'Se logro hacer lo del libro' });
+            });
+        } else {
+            query = `UPDATE usuario_libro SET es_favorito = ${!result[0].es_favorito} WHERE id_libro = '${save.id_libro}' AND  id_usuario = '${save.id_usuario}'`;
 
-        conex.query(query, (err, results) => {
-            if (err) return res.status(500).send({ message: 'Error al poner como favorito el libro', error: err });
-            else res.status(201).send({ message: 'Se logro hacer lo del libro' });  
-        });
+            conex.query(query, (err, results) => {
+                if (err) return res.status(500).send({ message: 'Error al poner como favorito el libro', error: err });
+                else res.status(201).send({ message: 'Se logro hacer lo del libro' });
+            });
+        }
     });
 });
 

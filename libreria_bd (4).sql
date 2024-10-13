@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-10-2024 a las 18:08:32
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Tiempo de generación: 13-10-2024 a las 19:36:19
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -41,7 +41,8 @@ CREATE TABLE `autores` (
 --
 
 INSERT INTO `autores` (`id_autor`, `nombre`, `apellido`, `fecha_nacimiento`, `pais_origen`, `biografia`) VALUES
-(1, 'Martin', 'Kohan', '1967-01-24', 'Argentina', 'Escritor, crítico literario y docente. Licenciado y Doctor en Letras por la Universidad de Buenos Aires.');
+(1, 'Martin', 'Kohan', '1967-01-24', 'Argentina', 'Escritor, crítico literario y docente. Licenciado y Doctor en Letras por la Universidad de Buenos Aires.'),
+(2, 'Edgar Allan', 'Poe', '1809-01-19', 'Estados unidos', 'Edgar Allan Poe fue un escritor, poeta, crítico y periodista romántico​​ estadounidense, generalmente reconocido como uno de los maestros universales del relato corto, del cual fue uno de los primeros practicantes en su país. Fue renovador de la novela gótica, recordado especialmente por sus cuentos de terror.');
 
 -- --------------------------------------------------------
 
@@ -367,17 +368,18 @@ INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `direccion`, `fecha_
 --
 
 CREATE TABLE `usuario_autor` (
-  `id_uaf` int(11) NOT NULL,
-  `id_usuario` int(11) DEFAULT NULL,
-  `id_autor` int(11) DEFAULT NULL
+  `id_au` int(11) NOT NULL,
+  `id_autor` int(11) DEFAULT NULL,
+  `id_usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
 --
 -- Volcado de datos para la tabla `usuario_autor`
 --
 
-INSERT INTO `usuario_autor` (`id_uaf`, `id_usuario`, `id_autor`) VALUES
-(1, 1, 1);
+INSERT INTO `usuario_autor` (`id_au`, `id_autor`, `id_usuario`) VALUES
+(1, 1, 1),
+(2, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -396,7 +398,8 @@ CREATE TABLE `usuario_categoria` (
 --
 
 INSERT INTO `usuario_categoria` (`id_uc`, `id_categoria`, `id_usuario`) VALUES
-(1, 1, 1);
+(1, 1, 1),
+(2, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -418,7 +421,8 @@ CREATE TABLE `usuario_libro` (
 
 INSERT INTO `usuario_libro` (`id_ul`, `estado_lectura`, `es_favorito`, `id_libro`, `id_usuario`) VALUES
 (1, 'no empezado', 0, 1, 1),
-(3, '', 0, 1, 1);
+(3, '', 0, 1, 1),
+(5, NULL, 1, 3, 1);
 
 --
 -- Índices para tablas volcadas
@@ -547,7 +551,7 @@ ALTER TABLE `usuarios`
 -- Indices de la tabla `usuario_autor`
 --
 ALTER TABLE `usuario_autor`
-  ADD PRIMARY KEY (`id_uaf`),
+  ADD PRIMARY KEY (`id_au`),
   ADD UNIQUE KEY `id_usuario` (`id_usuario`,`id_autor`),
   ADD KEY `id_autor` (`id_autor`);
 
@@ -575,7 +579,7 @@ ALTER TABLE `usuario_libro`
 -- AUTO_INCREMENT de la tabla `autores`
 --
 ALTER TABLE `autores`
-  MODIFY `id_autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_autor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `carrito`
@@ -677,19 +681,19 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `usuario_autor`
 --
 ALTER TABLE `usuario_autor`
-  MODIFY `id_uaf` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_au` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario_categoria`
 --
 ALTER TABLE `usuario_categoria`
-  MODIFY `id_uc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_uc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario_libro`
 --
 ALTER TABLE `usuario_libro`
-  MODIFY `id_ul` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_ul` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas

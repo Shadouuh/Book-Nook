@@ -135,7 +135,7 @@ Content-Type: application/json
 
 {
     "save": {
-        "id_libro": 3,
+        "id_libro": 1,
         "id_usuario": 1
     }
 }
