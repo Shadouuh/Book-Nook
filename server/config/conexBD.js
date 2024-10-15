@@ -1,16 +1,21 @@
-const mysql = require('mysql2')
+const mysql = require('mysql2/promise');
 
-const conex = mysql.createConnection ({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'libreria_bd',
-    port: 3306
-})
+async function createConnection() {
+    try {
+        const conex = await mysql.createConnection({
+            host: 'localhost',
+            user: 'root',
+            password: '',
+            database: 'libreria_bd'
+        });
 
-conex.connect((err)=> {
-    if(err) console.error('Error en la conexion', err)
-    else console.log('Conexion exitosa!!!')
-})
+        console.log('Conexion exitosa!!!');
+        return conex;
 
-module.exports = conex
+    } catch (err) {
+        console.error('Error en la conexion', err);
+        throw err;
+    }
+};
+
+module.exports = createConnection;

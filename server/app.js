@@ -4,45 +4,90 @@ const path = require('path');
 const cors = require('cors');
 const anju = require('anju-js');
 
+//Se crea la app
 const app = express();
 const port = 3000;
 
 // Conexión
-const conex = require(path.join(__dirname, 'config', 'conexBD'));
+const createConnection = require(path.join(__dirname, 'config', 'conexBD'));
+
+let conex;
+
+async function init() {
+    conex = await createConnection();
+}
+
+init();
 
 // Middlewares
 app.use(express.json());
 app.use(cors());
 
+//Manejo de errores
+const handleError = (res, message, err = null, status = 500) => {
+    console.error(message, err);
+    res.status(status).send({ message });
+};
+
+//Promesas y funcion de verificacion
 
 /*### Endpoints ###*/
 
+
 //LOGIN
-app.post('/login', (req, res) => {
-    const { user } = req.body;
-    const clave = anju.encrypt(user.clave);
+app.post('/login', async (req, res) => {
+    try {
+        const { user } = req.body;
+        const clave = anju.encrypt(user.clave);
 
-    const verifi = "SELECT id_login FROM login WHERE email=? OR telefono=?";
+        const email = user.email || null;
+        const telefono = user.telefono || null;
 
-    conex.query(verifi, [user.email, user.telefono], (err, result) => {
-        if (err) return res.status(500).send({ message: 'Error en la verificación', error: err });
-        else if (result == "") {
-            res.status(401).send({ message: 'No existe cuenta con el email ' + user.email });
-        } else {
-            const query = "SELECT id_login, tipo FROM login WHERE email=? OR telefono=? AND clave=?";
+        const [result] = await conex.execute(
+            'SELECT id_login FROM login WHERE email=? OR telefono=?',
+            [email, telefono]
+        );
 
-            conex.query(query, [user.email, user.telefono, clave], (err, results) => {
-                if (err) return res.status(500).send({ message: 'Error en el login', error: err });
-                else if (results == "") {
-                    res.send({ message: 'Credenciales incorrectas' });
-                }
-                else {
-                    res.send({ resultado: results });
-                };
-            });
-        }
-    });
+        if (result.length == 0) return handleError(res, 'El email y telefono no estan asociados a ninguna cuenta', null, 400);
+
+        const [login] = await conex.execute(
+            'SELECT id_login, tipo FROM login WHERE (email=? OR telefono=?) AND clave=?',
+            [email, telefono, clave]
+        );
+
+        if (login.length == 0) return handleError(res, 'Credenciales incorrectas', null, 401);
+
+        res.send({ resultado: login });
+    } catch (err) {
+        return handleError(res, 'Error en el login', err);
+    }
 });
+
+// app.post('/login', (req, res) => {
+//     const { user } = req.body;
+//     const clave = anju.encrypt(user.clave);
+
+//     const verifi = "SELECT id_login FROM login WHERE email=? OR telefono=?";
+
+//     conex.query(verifi, [user.email, user.telefono], (err, result) => {
+//         if (err) return res.status(500).send({ message: 'Error en la verificación', error: err });
+//         else if (result == "") {
+//             res.status(401).send({ message: 'No existe cuenta con el email ' + user.email });
+//         } else {
+//             const query = "SELECT id_login, tipo FROM login WHERE email=? OR telefono=? AND clave=?";
+
+//             conex.query(query, [user.email, user.telefono, clave], (err, results) => {
+//                 if (err) return res.status(500).send({ message: 'Error en el login', error: err });
+//                 else if (results == "") {
+//                     res.send({ message: 'Credenciales incorrectas' });
+//                 }
+//                 else {
+//                     res.send({ resultado: results });
+//                 };
+//             });
+//         }
+//     });
+//});
 
 //Register
 app.post('/register', (req, res) => {
