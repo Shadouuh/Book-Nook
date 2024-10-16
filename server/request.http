@@ -54,7 +54,7 @@ Content-Type: application/json
 
 {   
     "user": {
-        "telefono": "113254769801",
+        "email": "quizas@gmail.com",
         "clave": "megustasanti321"
     }
 }
@@ -66,8 +66,8 @@ Content-Type: application/json
 
 { 
     "user": {
-        "email": "quizas@gmail.com",
-        "telefono": "1153548796",
+        "email": "santelo@hotmail.com",
+        "telefono": "1111111111",
         "clave": "megustasanti321",
         "nombre": "Don",
         "apellido": "Roberto",

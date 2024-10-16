@@ -34,7 +34,7 @@ const handleError = (res, message, err = null, status = 500) => {
 /*### Endpoints ###*/
 
 
-//LOGIN
+//Login
 app.post('/login', async (req, res) => {
     try {
         const { user } = req.body;
@@ -48,14 +48,14 @@ app.post('/login', async (req, res) => {
             [email, telefono]
         );
 
-        if (result.length == 0) return handleError(res, 'El email y telefono no estan asociados a ninguna cuenta', null, 400);
+        if (result.length == 0) return res.status(400).send({ message: 'El email y telefono no estan asociados a ninguna cuenta' });
 
         const [login] = await conex.execute(
             'SELECT id_login, tipo FROM login WHERE (email=? OR telefono=?) AND clave=?',
             [email, telefono, clave]
         );
 
-        if (login.length == 0) return handleError(res, 'Credenciales incorrectas', null, 401);
+        if (login.length == 0) return res.status(400).send({ message: 'Credenciales incorrectas' });
 
         res.send({ resultado: login });
     } catch (err) {
@@ -63,292 +63,219 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// app.post('/login', (req, res) => {
-//     const { user } = req.body;
-//     const clave = anju.encrypt(user.clave);
-
-//     const verifi = "SELECT id_login FROM login WHERE email=? OR telefono=?";
-
-//     conex.query(verifi, [user.email, user.telefono], (err, result) => {
-//         if (err) return res.status(500).send({ message: 'Error en la verificación', error: err });
-//         else if (result == "") {
-//             res.status(401).send({ message: 'No existe cuenta con el email ' + user.email });
-//         } else {
-//             const query = "SELECT id_login, tipo FROM login WHERE email=? OR telefono=? AND clave=?";
-
-//             conex.query(query, [user.email, user.telefono, clave], (err, results) => {
-//                 if (err) return res.status(500).send({ message: 'Error en el login', error: err });
-//                 else if (results == "") {
-//                     res.send({ message: 'Credenciales incorrectas' });
-//                 }
-//                 else {
-//                     res.send({ resultado: results });
-//                 };
-//             });
-//         }
-//     });
-//});
-
 //Register
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
     const { user } = req.body;
     const clave = anju.encrypt(user.clave);
 
-    const verifiMail = "SELECT id_login FROM login WHERE email=?";
+    try {
+        const [emailResult] = await conex.execute('SELECT id_login FROM login WHERE email=?', [user.email]);
 
-    conex.query(verifiMail, [user.email], (err, result) => {
-        if (err) return res.status(500).send({ message: 'Error en la verificación del email', error: err });
-        else if (result != "") {
-            res.status(401).send({ message: `El email: ${user.email} ya esta tiene cuenta` });
-        } else {
-            const queryTel = "SELECT telefono FROM login WHERE telefono=?";
+        if (emailResult.length > 0) return res.status(409).send({ message: `El email: ${user.email} ya tiene una cuenta registrada` });
 
-            conex.query(queryTel, [user.telefono], (err, results) => {
-                if (err) return res.status(500).send({ message: 'Error en la verificacion del telefono', error: err });
-                else if (user.telefono && results != "") {
-                    if (results[0].telefono == user.telefono) {
-                        res.status(401).send({ message: `El telefono: ${user.telefono} ya esta registrado` });
-                    }
-                } else {
-                    const query = "INSERT INTO login(email, telefono, clave, tipo) VALUES(?, ?, ?, 'cliente');";
+        const [telefonoResult] = await conex.execute('SELECT telefono FROM login WHERE telefono=?', [user.telefono]);
 
-                    conex.query(query, [user.email, user.telefono, clave], (err, results) => {
-                        if (err) return res.status(500).send({ message: 'Error al insertar en login', error: err });
-                        else {
-                            let hoy = new Date().toLocaleDateString();
-                            const query2 = `INSERT INTO usuarios(nombre, apellido, direccion, fecha_registro, fecha_nacimiento, alias, id_login) VALUES(?,?,?,'${hoy}' ,?,?, ${results.insertId})`;
-                            conex.query(query2, [user.nombre, user.apellido, user.direccion, user.fecha_nacimiento, user.alias], (err, result) => {
-                                if (err) return res.status(500).send({ message: 'Error al insertar en usuarios', error: err });
-                                else {
-                                    res.status(201).send({ message: 'Se registro correctamente el usuario' });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        }
-    });
+        if (telefonoResult.length > 0) return res.status(409).send({ message: `El teléfono: ${user.telefono} ya está registrado` });
+
+        const [insertLoginResult] = await conex.execute(
+            "INSERT INTO login(email, telefono, clave, tipo) VALUES(?, ?, ?, 'cliente')",
+            [user.email, user.telefono, clave]
+        );
+
+        let hoy = new Date().toLocaleDateString();
+
+        await conex.execute(
+            "INSERT INTO usuarios(nombre, apellido, direccion, fecha_registro, fecha_nacimiento, alias, id_login) VALUES(?, ?, ?, ?, ?, ?, ?)",
+            [user.nombre, user.apellido, user.direccion, hoy, user.fecha_nacimiento, user.alias, insertLoginResult.insertId]
+        );
+
+        res.status(201).send({ message: 'Se registró correctamente el usuario' });
+    } catch (err) {
+        return handleError(res, 'Error al registrar el usuario', err);
+    }
 });
 
-//Save book
-app.post('/api/libros/guardar', (req, res) => {
+// Toggle fav book
+app.post('/api/libros/cambiarFavorito', async (req, res) => {
     const { save } = req.body;
-    const verifi = `SELECT id_ul FROM usuario_libro WHERE id_libro = '${save.id_libro}' AND  id_usuario = '${save.id_usuario}'`;
+    const verifi = 'SELECT es_favorito FROM usuario_libro WHERE id_libro = ? AND id_usuario = ?';
 
-    conex.query(verifi, (err, result) => {
-        if (err) return res.status(500).send({ message: 'Error en la consulta de verificación', error: err });
-        else if (result != "") {
-            res.status(401).send({ message: 'El libro ya esta guardado' });
-        } else {
-            const query = `INSERT INTO usuario_libro(id_libro, id_usuario) VALUES('${save.id_libro}', '${save.id_usuario}')`;
+    try {
+        const [result] = await conex.execute(verifi, [save.id_libro, save.id_usuario]);
 
-            conex.query(query, (err, results) => {
-                if (err) return res.status(500).send({ message: 'Error al guardar el libro', error: err });
-                else res.status(201).send({ message: 'Se guardo el libro' });
-            });
+        let query;
+        if (result.length === 0) {
+            query = 'INSERT INTO usuario_libro(es_favorito, id_libro, id_usuario) VALUES(1, ?, ?)';
+            await conex.execute(query, [save.id_libro, save.id_usuario]);
+            return res.status(201).send({ message: 'Se insertó el libro como favorito' });
         }
-    });
+
+        query = 'UPDATE usuario_libro SET es_favorito = ? WHERE id_libro = ? AND id_usuario = ?';
+        await conex.execute(query, [!result[0].es_favorito, save.id_libro, save.id_usuario]);
+
+        res.status(200).send({ message: 'Se actualizó el estado de favorito del libro' });
+    } catch (err) {
+        handleError(res, 'Error al cambiar el estado de favorito del libro', err);
+    }
 });
 
-//Toggle fav book
-app.post('/api/libros/cambiarFavorito', (req, res) => {
+// Save book
+app.post('/api/libros/guardar', async (req, res) => {
     const { save } = req.body;
-    let query;
+    const verifi = `SELECT id_ul FROM usuario_libro WHERE id_libro = ? AND id_usuario = ?`;
 
-    const verifi = `SELECT es_favorito FROM usuario_libro WHERE id_libro = '${save.id_libro}' AND  id_usuario = '${save.id_usuario}'`;
+    try {
+        const [result] = await conex.execute(verifi, [save.id_libro, save.id_usuario]);
 
-    conex.query(verifi, (err, result) => {
-        if (err) return res.status(500).send({ message: 'Error en la consulta de verificación', error: err });
-        else if (result == "") {
-            query = `INSERT INTO usuario_libro(es_favorito, id_libro, id_usuario) VALUES(1, ${save.id_libro}, ${save.id_usuario})`;
+        if (result.length > 0) return res.status(409).send({ message: 'El libro ya está guardado' });
 
-            conex.query(query, (err, results) => {
-                if (err) return res.status(500).send({ message: 'Error al insertar como favorito el libro', error: err });
-                else res.status(201).send({ message: 'Se logro hacer lo del libro' });
-            });
-        } else {
-            query = `UPDATE usuario_libro SET es_favorito = ${!result[0].es_favorito} WHERE id_libro = '${save.id_libro}' AND  id_usuario = '${save.id_usuario}'`;
+        const query = `INSERT INTO usuario_libro(id_libro, id_usuario) VALUES(?, ?)`;
+        await conex.execute(query, [save.id_libro, save.id_usuario]);
 
-            conex.query(query, (err, results) => {
-                if (err) return res.status(500).send({ message: 'Error al poner como favorito el libro', error: err });
-                else res.status(201).send({ message: 'Se logro hacer lo del libro' });
-            });
-        }
-    });
+        res.status(201).send({ message: 'Se guardó el libro' });
+    } catch (err) {
+        handleError(res, 'Error al guardar el libro', err);
+    }
 });
 
-//Save autor
-app.post('/api/autores/guardar', (req, res) => {
+// Save author
+app.post('/api/autores/guardar', async (req, res) => {
     const { save } = req.body;
-    const verifi = `SELECT id_au FROM usuario_autor WHERE id_autor = '${save.id_autor}' AND  id_usuario = '${save.id_usuario}'`;
+    const verifi = 'SELECT id_au FROM usuario_autor WHERE id_autor = ? AND id_usuario = ?';
 
-    conex.query(verifi, (err, result) => {
-        if (err) return res.status(500).send({ message: 'Error en la consulta de verificación', error: err });
-        else if (result != "") {
-            res.status(500).send({ message: 'El autor ya esta guardado' });
-        } else {
-            const query = `INSERT INTO usuario_autor(id_autor, id_usuario) VALUES('${save.id_autor}', '${save.id_usuario}')`;
+    try {
+        const [result] = await conex.execute(verifi, [save.id_autor, save.id_usuario]);
 
-            conex.query(query, (err, results) => {
-                if (err) return res.status(500).send({ message: 'Error al guardar el autor favorito', error: err });
-                else res.status(201).send({ message: 'Se guardo el autor como favorito' });
-            });
-        }
-    });
+        if (result.length > 0) return res.status(409).send({ message: 'El autor ya está guardado' });
+
+        const query = 'INSERT INTO usuario_autor(id_autor, id_usuario) VALUES(?, ?)';
+        await conex.execute(query, [save.id_autor, save.id_usuario]);
+
+        res.status(201).send({ message: 'Se guardó el autor como favorito' });
+    } catch (err) {
+        handleError(res, 'Error al guardar el autor favorito', err);
+    }
 });
 
-//Save category
-app.post('/api/categorias/guardar', (req, res) => {
+// Save category
+app.post('/api/categorias/guardar', async (req, res) => {
     const { save } = req.body;
-    const verifi = `SELECT id_uc FROM usuario_categoria WHERE id_categoria = '${save.id_categoria}' AND  id_usuario = '${save.id_usuario}'`;
+    const verifi = 'SELECT id_uc FROM usuario_categoria WHERE id_categoria = ? AND id_usuario = ?';
 
-    conex.query(verifi, (err, result) => {
-        if (err) return res.status(500).send({ message: 'Error en la consulta de verificación', error: err });
-        else if (result != "") {
-            res.status(500).send({ message: 'La categoria ya esta guardada' });
-        } else {
-            const query = `INSERT INTO usuario_categoria(id_categoria, id_usuario) VALUES('${save.id_categoria}', '${save.id_usuario}')`;
+    try {
+        const [result] = await conex.execute(verifi, [save.id_categoria, save.id_usuario]);
 
-            conex.query(query, (err, results) => {
-                if (err) return res.status(500).send({ message: 'Error al guardar categoria favorita', error: err });
-                else res.status(201).send({ message: 'Se guardo la categoria como favorita' });
-            });
-        }
-    });
+        if (result.length > 0) return res.status(409).send({ message: 'La categoría ya está guardada' });
+
+        const query = `INSERT INTO usuario_categoria(id_categoria, id_usuario) VALUES(?, ?)`;
+        await conex.execute(query, [save.id_categoria, save.id_usuario]);
+
+        res.status(201).send({ message: 'Se guardó la categoría como favorita' });
+    } catch (err) {
+        handleError(res, 'Error al guardar la categoría favorita', err);
+    }
 });
 
-//Select by id
-app.get('/api/:tabla/:id', (req, res) => {
+// Select by id
+app.get('/api/:tabla/:id', async (req, res) => {
     const { tabla, id } = req.params;
 
-    const queryDesc = 'DESC ' + tabla;
-    conex.query(queryDesc, (err, result) => {
+    try {
+        const [result] = await conex.execute('DESC ' + tabla);
+        const primaryKey = result.find(col => col.Key === 'PRI').Field;
 
-        if (err) return res.status(500).send({ message: 'Error al obtener las columnas de la tabla ' + tabla, error: err });
-        result.map(function (col) {
-            if (col.Key == 'PRI') primary = col.Field;
-        });
+        const [results] = await conex.execute(`SELECT * FROM ${tabla} WHERE ${primaryKey} = ?`, [id]);
 
-        const query = `SELECT * FROM ${tabla} WHERE ${primary} = ${id}`;
+        if (results.length === 0) return res.status(404).send({ message: 'No se encontró el elemento' });
 
-        conex.query(query, (err, results) => {
-            if (err) return res.status(500).send({ message: 'Error en la consulta', error: err });
-            else if (results == "") {
-                res.status(404).send({ message: 'No se encontro el elemento' });
-            }
-            else res.send({ resultados: results });
-        });
-    });
+        res.send({ resultados: results });
+    } catch (err) {
+        handleError(res, 'Error en la consulta', err);
+    }
 });
 
-//DESC table
-app.get('/:tabla/desc', (req, res) => {
+// DESC table
+app.get('/:tabla/desc', async (req, res) => {
     const { tabla } = req.params;
-    const queryDesc = 'DESC ' + tabla;
 
-    conex.query(queryDesc, (err, result) => {
-        if (err) return res.status(500).send({ message: 'Error al obtener las columnas de la tabla ' + tabla, error: err });
-        else if (result == "") {
-            res.status(404).send({ message: 'No se encontro la tabla ' + tabla });
-        }
-        else {
-            res.status(200).send({ resultado: result });
-        }
-    });
+    try {
+        const [result] = await conex.execute('DESC ' + tabla);
+        if (result.length === 0) return res.status(404).send({ message: 'No se encontró la tabla ' + tabla });
+
+        res.status(200).send({ resultado: result });
+    } catch (err) {
+        handleError(res, 'Error al obtener las columnas de la tabla ' + tabla, err);
+    }
 });
 
-//CRUD
-app.get('/api/:tabla', (req, res) => {
+// CRUD 
+app.get('/api/:tabla', async (req, res) => {
     const { tabla } = req.params;
-    const query = 'SELECT * FROM ' + tabla;
 
-    conex.query(query, (err, results) => {
-        if (err) return res.status(500).send({ message: 'Error en la consulta', error: err });
-        else res.send({ resultados: results });
-    });
+    try {
+        const [results] = await conex.execute('SELECT * FROM ' + tabla);
+        res.send({ resultados: results });
+    } catch (err) {
+        handleError(res, 'Error en la consulta', err);
+    }
 });
 
-app.post('/api/:tabla', (req, res) => {
+// Insert into table
+app.post('/api/:tabla', async (req, res) => {
     const { tabla } = req.params;
     const { dates } = req.body;
 
-    const queryDesc = 'DESC ' + tabla;
-    conex.query(queryDesc, (err, result) => {
-        if (err) return res.status(500).send({ message: 'Error al obtener las columnas de la tabla ' + tabla, error: err });
-        else if (result == "") {
-            res.status(404).send({ message: 'No se encontro la tabla ' + tabla });
-        } else {
-            const columnas = result.map(col => col.Field);
-            const valores = columnas.map(col => dates[col]);
+    try {
+        const [columns] = await conex.execute('DESC ' + tabla);
+        const columnFields = columns.map(col => col.Field);
+        const columnValues = columnFields.map(col => dates[col]);
 
-            const campos = result.map(col => col.Field);
-            const tipos = result.map(col => col.Type);
+        const query = `INSERT INTO ${tabla} (${columnFields.join(', ')}) VALUES (${columnFields.map(() => '?').join(', ')})`;
+        await conex.execute(query, columnValues);
 
-            const query = `INSERT INTO ${tabla} (${columnas.join(', ')}) VALUES (${columnas.map(() => '?').join(', ')})`;
-
-            conex.query(query, valores, (err, result) => {
-                if (err) return res.status(500).send({ message: 'Error al insertar los datos', error: err });
-                res.status(201).send({ message: 'Se inserto correctamente en ' + tabla });
-            });
-        }
-    });
+        res.status(201).send({ message: 'Se insertó correctamente en ' + tabla });
+    } catch (err) {
+        handleError(res, 'Error al insertar los datos', err);
+    }
 });
 
-app.put('/api/:tabla/:id', (req, res) => {
+// Update by id
+app.put('/api/:tabla/:id', async (req, res) => {
     const { tabla, id } = req.params;
     const { dates } = req.body;
 
-    const queryDesc = 'DESC ' + tabla;
-    conex.query(queryDesc, (err, result) => {
-        if (err) return res.status(500).send({ message: 'Error al obtener las columnas de la tabla ' + tabla, error: err });
-        else if (result == "") {
-            res.status(404).send({ message: 'No se encontro la tabla ' + tabla });
-        } else {
-            const columnas = result.map(col => col.Field);
-            const valores = columnas.map(col => dates[col]);
+    try {
+        const [columns] = await conex.execute('DESC ' + tabla);
+        const primaryKey = columns.find(col => col.Key === 'PRI').Field;
+        const columnFields = columns.map(col => col.Field).slice(1);  // Remove primary key
+        const columnValues = columnFields.map(col => dates[col]);
 
-            result.map(function (col) {
-                if (col.Key == "PRI") primary = col.Field;
-            });
+        const query = `UPDATE ${tabla} SET ${columnFields.join(' = ?, ')} = ? WHERE ${primaryKey} = ?`;
+        await conex.execute(query, [...columnValues, id]);
 
-            columnas.shift();
-            valores.shift();
-
-            const query = `UPDATE ${tabla} SET ${columnas.join(" = ?,")}  = ? WHERE ${primary} = ${id}`;
-
-            conex.query(query, valores, (err, result) => {
-                if (err) return res.status(500).send({ message: 'Error al actualizar el elemento', error: err });
-                else if (result.affectedRows == 0) {
-                    res.status(404).send({ message: 'elemento no encontrado' });
-                } else res.status(201).send({ message: `elemento con el ${primary} ${id} actualizado` });
-            });
-        }
-    });
+        res.status(201).send({ message: `Elemento con el ${primaryKey} ${id} actualizado` });
+    } catch (err) {
+        handleError(res, 'Error al actualizar el elemento', err);
+    }
 });
 
-app.delete('/api/:tabla/:id', (req, res) => {
+// Delete by id
+app.delete('/api/:tabla/:id', async (req, res) => {
     const { tabla, id } = req.params;
 
-    const queryDesc = 'DESC ' + tabla;
-    conex.query(queryDesc, (err, result) => {
-        if (err) return res.status(500).send({ message: 'Error al obtener las columnas de la tabla ' + tabla, error: err });
-        else if (result == "") {
-            res.status(404).send({ message: 'No se encontro la tabla ' + tabla });
-        } else {
-            result.map(function (col) {
-                if (col.Key == "PRI") primary = col.Field;
-            });
-            const query = `DELETE FROM ${tabla} WHERE ${primary} = ?`;
+    try {
+        const [columns] = await conex.execute('DESC ' + tabla);
+        const primaryKey = columns.find(col => col.Key === 'PRI').Field;
 
-            conex.query(query, [id], (err, results) => {
-                if (err) return res.status(500).send({ message: 'Error al eliminar', error: err });
-                else if (results.affectedRows == 0) {
-                    res.status(404).send({ message: 'elemento con id no encontrado' });
-                } else res.send({ message: `Elemento con el ${primary} ${id} eliminado` });
-            });
-        }
-    });
+        const query = `DELETE FROM ${tabla} WHERE ${primaryKey} = ?`;
+        const [results] = await conex.execute(query, [id]);
+
+        if (results.affectedRows === 0) return res.status(404).send({ message: 'Elemento no encontrado' });
+
+        res.send({ message: `Elemento con el ${primaryKey} ${id} eliminado` });
+    } catch (err) {
+        handleError(res, 'Error al eliminar el elemento', err);
+    }
 });
 
 app.listen(port, () => console.log(`Server escuchando en el puerto ${port}!`));
