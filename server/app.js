@@ -29,10 +29,11 @@ const handleError = (res, message, err = null, status = 500) => {
     res.status(status).send({ message });
 };
 
-//Promesas y funcion de verificacion
 
 /*### Endpoints ###*/
 
+
+//-> Login y register <-
 
 //Login
 app.post('/login', async (req, res) => {
@@ -48,14 +49,14 @@ app.post('/login', async (req, res) => {
             [email, telefono]
         );
 
-        if (result.length == 0) return res.status(400).send({ message: 'El email y telefono no estan asociados a ninguna cuenta' });
+        if (result.length == 0) return handleError(res, 'El email y telefono no estan asociados a ninguna cuenta', null, 404);
 
         const [login] = await conex.execute(
             'SELECT id_login, tipo FROM login WHERE (email=? OR telefono=?) AND clave=?',
             [email, telefono, clave]
         );
 
-        if (login.length == 0) return res.status(400).send({ message: 'Credenciales incorrectas' });
+        if (login.length == 0) return handleError(res, 'Credenciales incorrectas', null, 400);
 
         res.send({ resultado: login });
     } catch (err) {
@@ -71,22 +72,25 @@ app.post('/register', async (req, res) => {
     try {
         const [emailResult] = await conex.execute('SELECT id_login FROM login WHERE email=?', [user.email]);
 
-        if (emailResult.length > 0) return res.status(409).send({ message: `El email: ${user.email} ya tiene una cuenta registrada` });
+        if (emailResult.length > 0) return handleError(res, `El email: ${user.email} ya tiene una cuenta registrada`, null, 409);
 
         const [telefonoResult] = await conex.execute('SELECT telefono FROM login WHERE telefono=?', [user.telefono]);
 
-        if (telefonoResult.length > 0) return res.status(409).send({ message: `El teléfono: ${user.telefono} ya está registrado` });
+        if (telefonoResult.length > 0) return handleError(res,  `El teléfono: ${user.telefono} ya está registrado` , null, 409);
 
-        const [insertLoginResult] = await conex.execute(
+        const [loginResult] = await conex.execute(
             "INSERT INTO login(email, telefono, clave, tipo) VALUES(?, ?, ?, 'cliente')",
             [user.email, user.telefono, clave]
         );
 
-        let hoy = new Date().toLocaleDateString();
+        const [userResult] = await conex.execute(
+            'INSERT INTO usuarios(nombre, apellido, direccion, fecha_nacimiento, alias, id_login) VALUES(?, ?, ?, ?, ?, ?)',
+            [user.nombre, user.apellido, user.direccion, user.fecha_nacimiento, user.alias, loginResult.insertId]
+        );
 
         await conex.execute(
-            "INSERT INTO usuarios(nombre, apellido, direccion, fecha_registro, fecha_nacimiento, alias, id_login) VALUES(?, ?, ?, ?, ?, ?, ?)",
-            [user.nombre, user.apellido, user.direccion, hoy, user.fecha_nacimiento, user.alias, insertLoginResult.insertId]
+            'INSERT INTO carrito(id_usuario) VALUES(?)',
+            [userResult.insertId]
         );
 
         res.status(201).send({ message: 'Se registró correctamente el usuario' });
@@ -95,29 +99,72 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// Toggle fav book
-app.post('/api/libros/cambiarFavorito', async (req, res) => {
-    const { save } = req.body;
-    const verifi = 'SELECT es_favorito FROM usuario_libro WHERE id_libro = ? AND id_usuario = ?';
+//-> Cart <-
+
+//Insert into cart
+app.post('/carrito/insertar', async (req, res) => {
+    const { cart } = req.body;
 
     try {
-        const [result] = await conex.execute(verifi, [save.id_libro, save.id_usuario]);
 
-        let query;
-        if (result.length === 0) {
-            query = 'INSERT INTO usuario_libro(es_favorito, id_libro, id_usuario) VALUES(1, ?, ?)';
-            await conex.execute(query, [save.id_libro, save.id_usuario]);
-            return res.status(201).send({ message: 'Se insertó el libro como favorito' });
-        }
+        const [resultCart] = await conex.execute(
+            'SELECT id_carrito FROM carrito WHERE id_usuario = ? ORDER BY id_carrito DESC',
+            [cart.id_usuario]
+        )
 
-        query = 'UPDATE usuario_libro SET es_favorito = ? WHERE id_libro = ? AND id_usuario = ?';
-        await conex.execute(query, [!result[0].es_favorito, save.id_libro, save.id_usuario]);
+        if (resultCart.length == 0) handleError(res, 'Error al obtener el id_carrito', null, 404);
 
-        res.status(200).send({ message: 'Se actualizó el estado de favorito del libro' });
+        await conex.execute(
+            'INSERT INTO carrito_items(cantidad, id_carrito, id_libro) VALUES(?, ?, ?)',
+            [cart.cantidad, resultCart[0].id_carrito, cart.id_libro]
+        );
+
+        res.status(201).send({ message: 'Se guardo el item en el carrito' });
+
     } catch (err) {
-        handleError(res, 'Error al cambiar el estado de favorito del libro', err);
+        handleError(res, 'Error al guardar en el carrito', err);
     }
 });
+
+//buy
+app.post('/carrito/pedir', async (req, res) => {
+    const { order }= req.body;
+    
+    try {
+        const [id_usuario] = await conex.execute(
+            'SELECT id_usuario FROM usuarios WHERE id_usuario = ?',
+            [order.id_usuario]
+        );
+
+        if(id_usuario.length == 0) handleError(res, 'No se encontro al usuario', null, 404);
+
+        const [id_carrito] = await conex.execute(
+            'SELECT id_carrito FROM carrito WHERE id_usuario = ? ORDER BY id_carrito DESC',
+            [order.id_usuario]
+        );
+
+        if(id_carrito.length == 0) handleError(res, 'No se encontro el carrito', null, 404);
+
+        await conex.execute(
+            'INSERT INTO pedidos(total, estado, fecha_estimada, id_usuario, id_carrito) VALUES(?, "pendiente", ?, ?,?)',
+            [order.total, order.fecha_estimada, order.id_usuario, id_carrito[0].id_carrito]
+        );
+        
+        await conex.execute(
+            'INSERT INTO carrito(id_usuario) VALUES(?)',
+            [order.id_usuario]
+        );
+
+        res.status(201).send({ message: 'Se pidio el carrito' });
+
+    } catch (err) {
+        handleError(res, 'Hubo un error en el carrito', err);
+    }
+});
+
+
+
+//-> Saves <-
 
 // Save book
 app.post('/api/libros/guardar', async (req, res) => {
@@ -176,6 +223,8 @@ app.post('/api/categorias/guardar', async (req, res) => {
     }
 });
 
+//-> Select & DESC <-
+
 // Select by id
 app.get('/api/:tabla/:id', async (req, res) => {
     const { tabla, id } = req.params;
@@ -208,7 +257,9 @@ app.get('/:tabla/desc', async (req, res) => {
     }
 });
 
-// CRUD 
+// -> CRUD <-
+
+//Select table
 app.get('/api/:tabla', async (req, res) => {
     const { tabla } = req.params;
 
@@ -220,7 +271,7 @@ app.get('/api/:tabla', async (req, res) => {
     }
 });
 
-// Insert into table
+//Insert into table
 app.post('/api/:tabla', async (req, res) => {
     const { tabla } = req.params;
     const { dates } = req.body;
@@ -239,7 +290,7 @@ app.post('/api/:tabla', async (req, res) => {
     }
 });
 
-// Update by id
+//Update by id
 app.put('/api/:tabla/:id', async (req, res) => {
     const { tabla, id } = req.params;
     const { dates } = req.body;
@@ -259,7 +310,7 @@ app.put('/api/:tabla/:id', async (req, res) => {
     }
 });
 
-// Delete by id
+//Delete by id
 app.delete('/api/:tabla/:id', async (req, res) => {
     const { tabla, id } = req.params;
 

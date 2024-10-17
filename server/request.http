@@ -46,7 +46,7 @@ GET http://localhost:3000/api/libros/1 HTTP/1.1
 
 ###
 
-GET http://localhost:3000/api/login HTTP/1.1
+GET http://localhost:3000/api/usuario_libro HTTP/1.1
 
 ###
 POST http://localhost:3000/login
@@ -66,14 +66,14 @@ Content-Type: application/json
 
 { 
     "user": {
-        "email": "santelo@hotmail.com",
-        "telefono": "1111111111",
-        "clave": "megustasanti321",
-        "nombre": "Don",
-        "apellido": "Roberto",
-        "direccion": "Los Pinos 343",
-        "fecha_nacimiento": "2002-01-01",
-        "alias": "Yadou"    
+        "email": "nodejs.com",
+        "telefono": "1234567890",
+        "clave": "lamamadesanti69",
+        "nombre": "Juan",
+        "apellido": "Juan",
+        "direccion": "Acanomas 321",
+        "fecha_nacimiento": "2001-11-01",
+        "alias": "Juanarroz"    
     }
 }
 
@@ -131,12 +131,26 @@ GET http://localhost:3000/login/desc HTTP/1.1
 
 ###
 
-POST http://localhost:3000/api/libros/cambiarFavorito HTTP/1.1
+POST http://localhost:3000/carrito/insertar HTTP/1.1
 Content-Type: application/json
 
 {
-    "save": {
+    "cart": {
+        "cantidad": 5,
         "id_libro": 1,
         "id_usuario": 1
+    }
+}
+
+###
+
+POST http://localhost:3000/carrito/pedir HTTP/1.1
+Content-Type: application/json
+
+{
+    "order": {
+        "total": 3000,
+        "fecha_estimada": "2025-5-5",
+        "id_usuario": 2
     }
 }

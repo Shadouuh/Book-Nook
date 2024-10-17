@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-10-2024 a las 19:36:19
+-- Tiempo de generación: 17-10-2024 a las 17:35:53
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -60,7 +60,10 @@ CREATE TABLE `carrito` (
 --
 
 INSERT INTO `carrito` (`id_carrito`, `id_usuario`) VALUES
-(1, 1);
+(1, 1),
+(3, 2),
+(4, 2),
+(2, 9);
 
 -- --------------------------------------------------------
 
@@ -80,7 +83,9 @@ CREATE TABLE `carrito_items` (
 --
 
 INSERT INTO `carrito_items` (`id_item`, `cantidad`, `id_carrito`, `id_libro`) VALUES
-(2, 1, 1, 3);
+(2, 1, 1, 3),
+(3, 2, 1, 1),
+(4, 5, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -260,7 +265,8 @@ INSERT INTO `login` (`id_login`, `email`, `telefono`, `clave`, `tipo`) VALUES
 (10, 'palateo8567@gmail.com', NULL, 'i79yU4dZb809F2smid9CU3dxVD1vC3oYHs2Fy0xbOb6vv6bObx0yF2sHYo3Cv1DVxd3UC9dims2F908bZd4Uy97i', 'cliente'),
 (11, 'teresita@gmail.com', '113254769801', 'Vd1CC3oxH829y2xmQ75yc4zZnk2jT7sFPe7XF9rZZM9lX4eXsf6KK6fsPr7FF7rPsf6KK6fsXe4Xl9MZZr9FX7ePFs7Tj2knZz4cy57Qmx2y928Hxo3CC1dV', 'cliente'),
 (33, 'correo@gmail.com', '', '1234', 'empleado'),
-(50, 'nomorecorreo@gmail.com', NULL, 'Vd1CC3oxH829y2xmQ75yc4zZnk2jT7sFPe7XF9rZZM9lX4eXsf6KK6fsPr7FF7rPsf6KK6fsXe4Xl9MZZr9FX7ePFs7Tj2knZz4cy57Qmx2y928Hxo3CC1dV', 'cliente');
+(56, 'santelo@hotmail.com', '1111111111', 'Vd1CC3oxH829y2xmQ75yc4zZnk2jT7sFPe7XF9rZZM9lX4eXsf6KK6fsPr7FF7rPsf6KK6fsXe4Xl9MZZr9FX7ePFs7Tj2knZz4cy57Qmx2y928Hxo3CC1dV', 'cliente'),
+(57, 'nodejs.com', '1234567890', 'iL9vU3dNs26QK8fjVk1jC7oFse6XK9fZVM1lC4oXsf6KK6fsgr4FM7zPHx2yy2xHPz7MF4rgsf6KK6fsXo4Cl1MVZf9KX6esFo7Cj1kVjf8KQ62sNd3Uv9Li', 'cliente');
 
 -- --------------------------------------------------------
 
@@ -313,7 +319,7 @@ CREATE TABLE `pedidos` (
   `estado` enum('pendiente','entregado','cancelado') NOT NULL,
   `fecha_estimada` date NOT NULL,
   `fecha_llegada` date NOT NULL,
-  `fecha_compra` date DEFAULT NULL,
+  `fecha_compra` timestamp NOT NULL DEFAULT current_timestamp(),
   `id_usuario` int(11) DEFAULT NULL,
   `id_carrito` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
@@ -323,7 +329,8 @@ CREATE TABLE `pedidos` (
 --
 
 INSERT INTO `pedidos` (`id_pedido`, `total`, `estado`, `fecha_estimada`, `fecha_llegada`, `fecha_compra`, `id_usuario`, `id_carrito`) VALUES
-(1, 18000, 'pendiente', '2024-10-04', '0000-00-00', '2024-09-30', 1, 1);
+(1, 18000, 'pendiente', '2024-10-04', '0000-00-00', '2024-09-30 03:00:00', 1, 1),
+(3, 3000, 'pendiente', '2025-05-05', '0000-00-00', '2024-10-17 15:33:46', 2, 3);
 
 -- --------------------------------------------------------
 
@@ -347,7 +354,7 @@ CREATE TABLE `usuarios` (
   `nombre` varchar(50) DEFAULT NULL,
   `apellido` varchar(50) DEFAULT NULL,
   `direccion` varchar(100) DEFAULT NULL,
-  `fecha_registro` date DEFAULT NULL,
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
   `fecha_nacimiento` date DEFAULT NULL,
   `alias` varchar(50) DEFAULT NULL,
   `id_login` int(11) DEFAULT NULL
@@ -358,8 +365,9 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `direccion`, `fecha_registro`, `fecha_nacimiento`, `alias`, `id_login`) VALUES
-(1, 'Cuan', 'Gottier', 'Miranda 895', '2024-09-29', '2007-09-04', 'Juanerros', 1),
-(2, 'Don', 'Roberto', 'Los Pinos 343', '0000-00-00', '2002-01-01', 'Yadou', 50);
+(1, 'Cuan', 'Gottier', 'Miranda 895', '2024-09-29 03:00:00', '2007-09-04', 'Juanerros', 1),
+(2, 'Don', 'Roberto', 'Los Pinos 343', '2024-10-17 13:29:15', '2002-01-01', 'Yadou', 56),
+(9, 'Juan', 'Juan', 'Acanomas 321', '2024-10-17 14:22:29', '2001-11-01', 'Juanarroz', 57);
 
 -- --------------------------------------------------------
 
@@ -410,7 +418,6 @@ INSERT INTO `usuario_categoria` (`id_uc`, `id_categoria`, `id_usuario`) VALUES
 CREATE TABLE `usuario_libro` (
   `id_ul` int(11) NOT NULL,
   `estado_lectura` enum('leyendo','terminado','abandonado','no empezado','no posee') DEFAULT NULL,
-  `es_favorito` tinyint(1) NOT NULL,
   `id_libro` int(11) DEFAULT NULL,
   `id_usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
@@ -419,10 +426,9 @@ CREATE TABLE `usuario_libro` (
 -- Volcado de datos para la tabla `usuario_libro`
 --
 
-INSERT INTO `usuario_libro` (`id_ul`, `estado_lectura`, `es_favorito`, `id_libro`, `id_usuario`) VALUES
-(1, 'no empezado', 0, 1, 1),
-(3, '', 0, 1, 1),
-(5, NULL, 1, 3, 1);
+INSERT INTO `usuario_libro` (`id_ul`, `estado_lectura`, `id_libro`, `id_usuario`) VALUES
+(5, NULL, 3, 1),
+(16, NULL, 1, 1);
 
 --
 -- Índices para tablas volcadas
@@ -545,6 +551,7 @@ ALTER TABLE `sedes`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id_usuario`),
+  ADD UNIQUE KEY `alias` (`alias`),
   ADD KEY `id_login` (`id_login`);
 
 --
@@ -585,13 +592,13 @@ ALTER TABLE `autores`
 -- AUTO_INCREMENT de la tabla `carrito`
 --
 ALTER TABLE `carrito`
-  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `carrito_items`
 --
 ALTER TABLE `carrito_items`
-  MODIFY `id_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
@@ -645,7 +652,7 @@ ALTER TABLE `libro_imgs`
 -- AUTO_INCREMENT de la tabla `login`
 --
 ALTER TABLE `login`
-  MODIFY `id_login` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id_login` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT de la tabla `mentores`
@@ -663,7 +670,7 @@ ALTER TABLE `mentor_frase`
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `sedes`
@@ -675,7 +682,7 @@ ALTER TABLE `sedes`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario_autor`
@@ -693,7 +700,7 @@ ALTER TABLE `usuario_categoria`
 -- AUTO_INCREMENT de la tabla `usuario_libro`
 --
 ALTER TABLE `usuario_libro`
-  MODIFY `id_ul` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_ul` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Restricciones para tablas volcadas
