@@ -66,14 +66,14 @@ Content-Type: application/json
 
 { 
     "user": {
-        "email": "nodejs.com",
-        "telefono": "1234567890",
-        "clave": "lamamadesanti69",
-        "nombre": "Juan",
+        "email": ".com",
+        "telefono": "1123581347",
+        "clave": "contra1234",
+        "nombre": "Cottier",
         "apellido": "Juan",
-        "direccion": "Acanomas 321",
-        "fecha_nacimiento": "2001-11-01",
-        "alias": "Juanarroz"    
+        "direccion": "casa 123",
+        "fecha_nacimiento": "2024-11-01",
+        "alias": "aña Juan"    
     }
 }
 

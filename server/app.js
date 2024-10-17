@@ -71,22 +71,33 @@ app.post('/register', async (req, res) => {
 
     try {
         const [emailResult] = await conex.execute('SELECT id_login FROM login WHERE email=?', [user.email]);
-
         if (emailResult.length > 0) return handleError(res, `El email: ${user.email} ya tiene una cuenta registrada`, null, 409);
 
         const [telefonoResult] = await conex.execute('SELECT telefono FROM login WHERE telefono=?', [user.telefono]);
-
-        if (telefonoResult.length > 0) return handleError(res,  `El teléfono: ${user.telefono} ya está registrado` , null, 409);
+        if (telefonoResult.length > 0) return handleError(res, `El teléfono: ${user.telefono} ya está registrado`, null, 409);
 
         const [loginResult] = await conex.execute(
             "INSERT INTO login(email, telefono, clave, tipo) VALUES(?, ?, ?, 'cliente')",
             [user.email, user.telefono, clave]
         );
 
+        if (loginResult.affectedRows == 0) return handleError(res, 'Error al insertar en login');
+
+        const [alias] = await conex.execute('SELECT alias FROM usuarios WHERE alias = ?', [user.alias]);
+        if (alias.length > 0) {
+            await conex.execute(
+                'DELETE FROM login WHERE id_login = ?',
+                [loginResult.insertId]
+            )
+            return handleError(res, `El alias ${user.alias} ya esta registrado`, null, 409)
+        };
+
         const [userResult] = await conex.execute(
             'INSERT INTO usuarios(nombre, apellido, direccion, fecha_nacimiento, alias, id_login) VALUES(?, ?, ?, ?, ?, ?)',
             [user.nombre, user.apellido, user.direccion, user.fecha_nacimiento, user.alias, loginResult.insertId]
         );
+
+        if (userResult.affectedRows == 0) return handleError(res, 'Error al insertar en usuarios');
 
         await conex.execute(
             'INSERT INTO carrito(id_usuario) VALUES(?)',
@@ -128,28 +139,28 @@ app.post('/carrito/insertar', async (req, res) => {
 
 //buy
 app.post('/carrito/pedir', async (req, res) => {
-    const { order }= req.body;
-    
+    const { order } = req.body;
+
     try {
         const [id_usuario] = await conex.execute(
             'SELECT id_usuario FROM usuarios WHERE id_usuario = ?',
             [order.id_usuario]
         );
 
-        if(id_usuario.length == 0) handleError(res, 'No se encontro al usuario', null, 404);
+        if (id_usuario.length == 0) handleError(res, 'No se encontro al usuario', null, 404);
 
         const [id_carrito] = await conex.execute(
             'SELECT id_carrito FROM carrito WHERE id_usuario = ? ORDER BY id_carrito DESC',
             [order.id_usuario]
         );
 
-        if(id_carrito.length == 0) handleError(res, 'No se encontro el carrito', null, 404);
+        if (id_carrito.length == 0) handleError(res, 'No se encontro el carrito', null, 404);
 
         await conex.execute(
             'INSERT INTO pedidos(total, estado, fecha_estimada, id_usuario, id_carrito) VALUES(?, "pendiente", ?, ?,?)',
             [order.total, order.fecha_estimada, order.id_usuario, id_carrito[0].id_carrito]
         );
-        
+
         await conex.execute(
             'INSERT INTO carrito(id_usuario) VALUES(?)',
             [order.id_usuario]
