@@ -117,7 +117,6 @@ app.post('/carrito/insertar', async (req, res) => {
     const { cart } = req.body;
 
     try {
-
         const [resultCart] = await conex.execute(
             'SELECT id_carrito FROM carrito WHERE id_usuario = ? ORDER BY id_carrito DESC',
             [cart.id_usuario]
@@ -136,6 +135,42 @@ app.post('/carrito/insertar', async (req, res) => {
         handleError(res, 'Error al guardar en el carrito', err);
     }
 });
+
+//Show items
+app.get('/carrito/ver/:id', async (req, res) => {
+    const { id } = req.params;
+    let resultBooks = [];
+
+    try {
+        const [resultCart] = await conex.execute(
+            'SELECT id_carrito FROM carrito WHERE id_usuario = ? ORDER BY id_carrito DESC',
+            [id]
+        )
+
+        const [resultItems] = await conex.execute(
+            'SELECT cantidad, id_libro FROM carrito_items WHERE id_carrito = ?',
+            [resultCart[0].id_carrito]
+        );
+
+        for (const item of resultItems) {
+            let [rows] = await conex.query(`SELECT * FROM libros WHERE id_libro = ${item.id_libro}`);
+
+            if (rows.length > 0) {
+                rows.forEach(book => {
+                    book.cantidad = item.cantidad;
+                    resultBooks.push(book);
+                });
+            } else return handleError(res, 'No hay libros', null, 404);
+        }
+
+        res.status(200).send({ resultados: resultBooks });
+
+    } catch (err) {
+        handleError(res, 'Hubo un error al mostrar los items del carrito', err);
+    }
+});
+
+
 
 //buy
 app.post('/carrito/pedir', async (req, res) => {
@@ -172,8 +207,6 @@ app.post('/carrito/pedir', async (req, res) => {
         handleError(res, 'Hubo un error en el carrito', err);
     }
 });
-
-
 
 //-> Saves <-
 
@@ -309,7 +342,7 @@ app.put('/api/:tabla/:id', async (req, res) => {
     try {
         const [columns] = await conex.execute('DESC ' + tabla);
         const primaryKey = columns.find(col => col.Key === 'PRI').Field;
-        const columnFields = columns.map(col => col.Field).slice(1);  // Remove primary key
+        const columnFields = columns.map(col => col.Field).slice(1);
         const columnValues = columnFields.map(col => dates[col]);
 
         const query = `UPDATE ${tabla} SET ${columnFields.join(' = ?, ')} = ? WHERE ${primaryKey} = ?`;

@@ -154,3 +154,6 @@ Content-Type: application/json
         "id_usuario": 2
     }
 }
+
+###
+GET http://localhost:3000/carrito/ver/1 HTTP/1.1
