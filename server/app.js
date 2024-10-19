@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const anju = require('anju-js');
+const { use } = require('framer-motion/client');
 
 //Se crea la app
 const app = express();
@@ -41,19 +42,21 @@ app.post('/login', async (req, res) => {
         const { user } = req.body;
         const clave = anju.encrypt(user.clave);
 
-        const email = user.email || null;
-        const telefono = user.telefono || null;
+        let resultAlias;
 
         const [result] = await conex.execute(
-            'SELECT id_login FROM login WHERE email=? OR telefono=?',
-            [email, telefono]
+            'SELECT id_login FROM login WHERE email = ? OR telefono = ?',
+            [user.key, user.key]
         );
 
-        if (result.length == 0) return handleError(res, 'El email y telefono no estan asociados a ninguna cuenta', null, 404);
+        if (result.length == 0) {
+            [resultAlias] = await conex.execute('SELECT id_login FROM usuarios WHERE alias = ?', [user.key]);
+            if (resultAlias.length == 0) return handleError(res, 'no se encotro la cuenta', null, 404);
+        }
 
         const [login] = await conex.execute(
-            'SELECT id_login, tipo FROM login WHERE (email=? OR telefono=?) AND clave=?',
-            [email, telefono, clave]
+            'SELECT id_login, tipo FROM login WHERE (email = ? OR telefono = ? OR id_login = ?) AND clave=?',
+            [user.key, user.key, resultAlias[0].id_login, clave]
         );
 
         if (login.length == 0) return handleError(res, 'Credenciales incorrectas', null, 400);
@@ -167,8 +170,6 @@ app.get('/carrito/ver/:id', async (req, res) => {
         handleError(res, 'Hubo un error al mostrar los items del carrito', err);
     }
 });
-
-
 
 //buy
 app.post('/carrito/pedir', async (req, res) => {

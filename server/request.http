@@ -1,4 +1,4 @@
-GET http://localhost:3000/api/libros HTTP/1.1
+GET http://localhost:3000/api/login HTTP/1.1
 
 ###
 
@@ -46,7 +46,7 @@ GET http://localhost:3000/api/libros/1 HTTP/1.1
 
 ###
 
-GET http://localhost:3000/api/usuario_libro HTTP/1.1
+GET http://localhost:3000/api/login HTTP/1.1
 
 ###
 POST http://localhost:3000/login
@@ -54,8 +54,8 @@ Content-Type: application/json
 
 {   
     "user": {
-        "email": "teresita@gmail.com",
-        "clave": "megustasanti321"
+        "key": "aña Juan",
+        "clave": "contra1234"
     }
 }
 
@@ -97,18 +97,6 @@ Content-Type: application/json
 {
     "save": {
         "id_categoria": 2,
-        "id_usuario": 1
-    }
-}
-
-###
-
-POST http://localhost:3000/api/libros/guardar
-Content-Type: application/json
-
-{
-    "save": {
-        "id_libro": 3,
         "id_usuario": 1
     }
 }
