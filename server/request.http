@@ -54,7 +54,7 @@ Content-Type: application/json
 
 {   
     "user": {
-        "email": "quizas@gmail.com",
+        "email": "teresita@gmail.com",
         "clave": "megustasanti321"
     }
 }
@@ -149,8 +149,8 @@ Content-Type: application/json
 
 {
     "order": {
-        "total": 3000,
-        "fecha_estimada": "2025-5-5",
+        "total": 12345,
+        "fecha_estimada": "2001-1-1",
         "id_usuario": 2
     }
 }

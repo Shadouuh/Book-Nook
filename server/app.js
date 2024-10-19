@@ -99,10 +99,7 @@ app.post('/register', async (req, res) => {
 
         if (userResult.affectedRows == 0) return handleError(res, 'Error al insertar en usuarios');
 
-        await conex.execute(
-            'INSERT INTO carrito(id_usuario) VALUES(?)',
-            [userResult.insertId]
-        );
+        await conex.execute('INSERT INTO carrito(id_usuario, es_actual) VALUES(?, true)', [userResult.insertId]);
 
         res.status(201).send({ message: 'Se registró correctamente el usuario' });
     } catch (err) {
@@ -157,6 +154,7 @@ app.get('/carrito/ver/:id', async (req, res) => {
 
             if (rows.length > 0) {
                 rows.forEach(book => {
+                    resultBooks.id_autor = conex.query(`SELECT nombre, apellido FROM autores WHERE id_autor = ${book.id_autor}`);
                     book.cantidad = item.cantidad;
                     resultBooks.push(book);
                 });
@@ -185,7 +183,7 @@ app.post('/carrito/pedir', async (req, res) => {
         if (id_usuario.length == 0) handleError(res, 'No se encontro al usuario', null, 404);
 
         const [id_carrito] = await conex.execute(
-            'SELECT id_carrito FROM carrito WHERE id_usuario = ? ORDER BY id_carrito DESC',
+            'SELECT id_carrito FROM carrito WHERE id_usuario = ? AND es_actual = true',
             [order.id_usuario]
         );
 
@@ -197,8 +195,13 @@ app.post('/carrito/pedir', async (req, res) => {
         );
 
         await conex.execute(
-            'INSERT INTO carrito(id_usuario) VALUES(?)',
+            'INSERT INTO carrito(id_usuario, es_actual) VALUES(?, true)',
             [order.id_usuario]
+        );
+
+        await conex.execute(
+            'UPDATE carrito SET es_actual = false WHERE id_carrito = ?',
+            [id_carrito[0].id_carrito]
         );
 
         res.status(201).send({ message: 'Se pidio el carrito' });
