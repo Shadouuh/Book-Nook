@@ -24,7 +24,7 @@ init();
 app.use(express.json());
 app.use(cors());
 
-//Manejo de errores
+// Manejo de errores
 const handleError = (res, message, err = null, status = 500) => {
     console.error(message, err);
     res.status(status).send({ message });
@@ -136,6 +136,16 @@ app.post('/carrito/insertar', async (req, res) => {
     }
 });
 
+
+
+
+
+//FALTAN LOS NOMBRES DEL AUTOR Y EDITORIAL
+
+
+
+
+
 //Show items
 app.get('/carrito/ver/:id', async (req, res) => {
     const { id } = req.params;
@@ -143,12 +153,12 @@ app.get('/carrito/ver/:id', async (req, res) => {
 
     try {
         const [resultCart] = await conex.execute(
-            'SELECT id_carrito FROM carrito WHERE id_usuario = ? ORDER BY id_carrito DESC',
+            'SELECT id_carrito FROM carrito WHERE id_usuario = ? AND es_actual = 1',
             [id]
         )
 
         const [resultItems] = await conex.execute(
-            'SELECT cantidad, id_libro FROM carrito_items WHERE id_carrito = ?',
+            'SELECT id_libro FROM carrito_items WHERE id_carrito = ?',
             [resultCart[0].id_carrito]
         );
 
@@ -158,7 +168,6 @@ app.get('/carrito/ver/:id', async (req, res) => {
             if (rows.length > 0) {
                 rows.forEach(book => {
                     resultBooks.id_autor = conex.query(`SELECT nombre, apellido FROM autores WHERE id_autor = ${book.id_autor}`);
-                    book.cantidad = item.cantidad;
                     resultBooks.push(book);
                 });
             } else return handleError(res, 'No hay libros', null, 404);

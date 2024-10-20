@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-10-2024 a las 15:23:01
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Tiempo de generación: 20-10-2024 a las 19:30:28
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -78,7 +78,6 @@ INSERT INTO `carrito` (`id_carrito`, `es_actual`, `id_usuario`) VALUES
 
 CREATE TABLE `carrito_items` (
   `id_item` int(11) NOT NULL,
-  `cantidad` int(11) DEFAULT NULL,
   `id_carrito` int(11) DEFAULT NULL,
   `id_libro` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
@@ -87,9 +86,9 @@ CREATE TABLE `carrito_items` (
 -- Volcado de datos para la tabla `carrito_items`
 --
 
-INSERT INTO `carrito_items` (`id_item`, `cantidad`, `id_carrito`, `id_libro`) VALUES
-(2, 1, 1, 3),
-(3, 2, 1, 1);
+INSERT INTO `carrito_items` (`id_item`, `id_carrito`, `id_libro`) VALUES
+(2, 1, 3),
+(3, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -143,6 +142,13 @@ CREATE TABLE `empleados` (
   `area` varchar(50) DEFAULT NULL,
   `id_sede` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `empleados`
+--
+
+INSERT INTO `empleados` (`id_empleado`, `dni`, `nombre`, `apellido`, `area`, `id_sede`) VALUES
+(1, '47232321', 'Ezequiel', 'Enrriquez', 'Reparto', 1);
 
 -- --------------------------------------------------------
 
@@ -636,7 +642,7 @@ ALTER TABLE `editoriales`
 -- AUTO_INCREMENT de la tabla `empleados`
 --
 ALTER TABLE `empleados`
-  MODIFY `id_empleado` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_empleado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `encargados`
