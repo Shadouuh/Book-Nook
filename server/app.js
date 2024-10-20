@@ -140,7 +140,7 @@ app.post('/carrito/insertar', async (req, res) => {
 
 
 
-//FALTAN LOS NOMBRES DEL AUTOR Y EDITORIAL
+//FALTAN LOS NOMBRES DEL AUTOR Y EDITORIAL Y LAS IMAGENES
 
 
 
@@ -163,17 +163,12 @@ app.get('/carrito/ver/:id', async (req, res) => {
         );
 
         for (const item of resultItems) {
-            let [rows] = await conex.query(`SELECT * FROM libros WHERE id_libro = ${item.id_libro}`);
+            const book = await fetch(`http://localhost:3000/libros/ver/${item.id_libro}`);
 
-            if (rows.length > 0) {
-                rows.forEach(book => {
-                    resultBooks.id_autor = conex.query(`SELECT nombre, apellido FROM autores WHERE id_autor = ${book.id_autor}`);
-                    resultBooks.push(book);
-                });
-            } else return handleError(res, 'No hay libros', null, 404);
+            resultBooks.push(await book.json());
         }
 
-        res.status(200).send({ resultados: resultBooks });
+        res.status(200).send({ resultBooks });
 
     } catch (err) {
         handleError(res, 'Hubo un error al mostrar los items del carrito', err);
@@ -280,7 +275,41 @@ app.post('/api/categorias/guardar', async (req, res) => {
     }
 });
 
-//-> Select & DESC <-
+//-> Select, show & DESC <-
+
+//Show books
+app.get('/libros/ver/:id', async (req, res) => {
+    const {id} = req.params;
+    let resultBooks = [];
+
+    try {
+        
+        let [books] = await conex.query(`SELECT * FROM libros WHERE id_libro = ${id}`);
+
+        if (books.length > 0) {
+            for (const book of books) {
+                const [autor] = await conex.query(`SELECT nombre, apellido FROM autores WHERE id_autor = ${book.id_autor}`);
+                const [editorial] = await conex.query(`SELECT nombre FROM editoriales WHERE id_editorial = ${book.id_editorial}`);
+                const [imagenes] = await conex.query(`SELECT archivo, tipo_angulo FROM libro_imgs WHERE id_libro = ${book.id_libro}`);
+
+                book.editorial = editorial.length > 0 ? editorial[0].nombre : null;
+                book.autor = autor.length > 0 ? autor[0] : null;
+                book.imagenes = imagenes.length > 0 ? imagenes[0] : null;
+
+                resultBooks.push(book);
+            }
+        } else {
+            return handleError(res, 'No hay libros', null, 404);
+        }
+        
+        res.status(200).send({ book: resultBooks });
+
+    } catch (err) {
+        handleError(res, 'Error al mostrar los libros', err);
+    }
+});
+
+
 
 // Select by id
 app.get('/api/:tabla/:id', async (req, res) => {
