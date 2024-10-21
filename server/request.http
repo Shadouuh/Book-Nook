@@ -1,0 +1,147 @@
+GET http://localhost:3000/api/login HTTP/1.1
+
+###
+
+POST http://localhost:3000/api/libros
+Content-Type: application/json
+
+{
+    "dates": {
+        "titulo": "libro falso",
+        "descripcion": "Como todo en la vida esto no es mas que una simple ilusion",
+        "precio": 2000,
+        "stock": 1,
+        "es_fisico": 0,
+        "fecha_publicacion": "2001-09-11T03:00:00.000Z",
+        "id_editorial": 1,
+        "id_autor": 1
+    }
+}
+
+###
+
+DELETE http://localhost:3000/api/libros/6 HTTP/1.1
+
+###
+
+PUT http://localhost:3000/api/libros/11 HTTP/1.1
+Content-Type: application/json
+
+{
+    "dates": {
+        "titulo": "NADA",
+        "descripcion": "Adolecencia resumen",
+        "precio": 0,
+        "stock": 0,
+        "es_fisico": 0,
+        "fecha_publicacion": "2000-01-01T03:00:00.000Z",
+        "id_editorial": 1,
+        "id_autor": 1
+    }
+}
+
+###
+
+GET http://localhost:3000/api/libros/1 HTTP/1.1
+
+###
+
+GET http://localhost:3000/api/login HTTP/1.1
+
+###
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{   
+    "user": {
+        "key": "mail.com.ar",
+        "clave": "contra1234"
+    }
+}
+
+###
+
+POST http://localhost:3000/register
+Content-Type: application/json
+
+{ 
+    "user": {
+        "email": ".com",
+        "telefono": "1123581347",
+        "clave": "contra1234",
+        "nombre": "Cottier",
+        "apellido": "Juan",
+        "direccion": "casa 123",
+        "fecha_nacimiento": "2024-11-01",
+        "alias": "aña Juan"    
+    }
+}
+
+###
+
+POST http://localhost:3000/api/libros/guardar 
+Content-Type: application/json
+
+{
+    "save": {
+        "id_libro": 1,
+        "id_usuario": 1
+    }
+}
+
+###
+
+POST http://localhost:3000/api/categorias/guardar
+Content-Type: application/json
+
+{
+    "save": {
+        "id_categoria": 2,
+        "id_usuario": 1
+    }
+}
+
+###
+
+POST http://localhost:3000/api/autores/guardar
+Content-Type: application/json
+
+{
+    "save": {
+        "id_autor": 2,
+        "id_usuario": 1
+    }
+}
+
+###
+
+GET http://localhost:3000/login/desc HTTP/1.1
+
+###
+
+POST http://localhost:3000/carrito/insertar HTTP/1.1
+Content-Type: application/json
+
+{
+    "cart": {
+        "cantidad": 5,
+        "id_libro": 1,
+        "id_usuario": 1
+    }
+}
+
+###
+
+POST http://localhost:3000/carrito/pedir HTTP/1.1
+Content-Type: application/json
+
+{
+    "order": {
+        "total": 12345,
+        "fecha_estimada": "2001-1-1",
+        "id_usuario": 2
+    }
+}
+
+###
+GET http://localhost:3000/carrito/ver/1 HTTP/1.1
