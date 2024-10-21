@@ -3,7 +3,6 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const anju = require('anju-js');
-const { use } = require('framer-motion/client');
 
 //Se crea la app
 const app = express();
@@ -13,7 +12,6 @@ const port = 3000;
 const createConnection = require(path.join(__dirname, 'config', 'conexBD'));
 
 let conex;
-
 async function init() {
     conex = await createConnection();
 }
@@ -66,8 +64,9 @@ app.post('/login', async (req, res) => {
         }
 
         if (login.length == 0) return handleError(res, 'Credenciales incorrectas', null, 400);
+        const [resultUser] = await conex.query(`SELECT * FROM usuarios WHERE id_login = ${login[0].id_login}`);
 
-        res.send({ resultado: login });
+        res.send({ login: login, user: resultUser });
     } catch (err) {
         return handleError(res, 'Error en el login', err);
     }
@@ -142,16 +141,6 @@ app.post('/carrito/insertar', async (req, res) => {
     }
 });
 
-
-
-
-
-//FALTAN LOS NOMBRES DEL AUTOR Y EDITORIAL Y LAS IMAGENES
-
-
-
-
-
 //Show items
 app.get('/carrito/ver/:id', async (req, res) => {
     const { id } = req.params;
@@ -225,7 +214,7 @@ app.post('/carrito/pedir', async (req, res) => {
 //-> Saves <-
 
 // Save book
-app.post('/api/libros/guardar', async (req, res) => {
+app.post('/libros/guardar', async (req, res) => {
     const { save } = req.body;
     const verifi = `SELECT id_ul FROM usuario_libro WHERE id_libro = ? AND id_usuario = ?`;
 
@@ -244,7 +233,7 @@ app.post('/api/libros/guardar', async (req, res) => {
 });
 
 // Save author
-app.post('/api/autores/guardar', async (req, res) => {
+app.post('/autores/guardar', async (req, res) => {
     const { save } = req.body;
     const verifi = 'SELECT id_au FROM usuario_autor WHERE id_autor = ? AND id_usuario = ?';
 
@@ -263,7 +252,7 @@ app.post('/api/autores/guardar', async (req, res) => {
 });
 
 // Save category
-app.post('/api/categorias/guardar', async (req, res) => {
+app.post('/categorias/guardar', async (req, res) => {
     const { save } = req.body;
     const verifi = 'SELECT id_uc FROM usuario_categoria WHERE id_categoria = ? AND id_usuario = ?';
 
@@ -417,6 +406,7 @@ app.delete('/api/:tabla/:id', async (req, res) => {
 
         res.send({ message: `Elemento con el ${primaryKey} ${id} eliminado` });
     } catch (err) {
+        //<CENTER></CENTER>
         handleError(res, 'Error al eliminar el elemento', err);
     }
 });
