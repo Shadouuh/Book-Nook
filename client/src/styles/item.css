@@ -1,0 +1,18 @@
+@keyframes precio{
+    88%{
+        transform: rotate(0deg);
+        filter: drop-shadow(0px 0px 0px white);
+    }
+    93%{
+        transform: rotate(5deg); 
+        filter: drop-shadow(0px 0px 2px rgba(255, 255, 255, 0.205));
+    }
+    96%{
+        transform: rotate(-4deg);
+        filter: drop-shadow(0px 0px 2px rgba(255, 255, 255, 0.205));
+    }
+    100%{
+        transform: rotate(0deg);
+        filter: drop-shadow(0px 0px 2px rgba(255, 255, 255, 0.205));
+    }
+}

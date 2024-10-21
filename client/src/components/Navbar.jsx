@@ -7,19 +7,37 @@ import Cart from "../assets/svg/Car.svg";
 import Menu from "../assets/svg/menu.svg";
 // Requerimentos
 import { NavLink, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 // Componentes
 import DropMenu from "./Menu";
 
 const Navbar = () => {
     // Menu Config
   const settings = [
-    { text: "Perfil", url: "/Login" },
+    { text: "Perfil", url: "/ItemPage" },
+    { text: "Ingresar", url: "/Login"},
     { text: "Idioma", url: "/Idioma" },
     { text: "Tema", url: "/Tema" },
   ];
   const location = useLocation();
+  const [navbarColor, setNavbarColor] = useState(false);
+
+  const changeBackground = () => {
+    if (window.scrollY > 200) { 
+      setNavbarColor(true);
+    } else {
+      setNavbarColor(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', changeBackground);
+    return () => {
+      window.removeEventListener('scroll', changeBackground);
+    };
+  }, []);
   return (
-    <nav>
+    <nav className={navbarColor ? 'colored' : 'nav'}>
       <div className="navTitle">
         <img src={Logo} alt="Book Nook" className="navImg" />
         <h1>
@@ -36,18 +54,14 @@ const Navbar = () => {
         >
           Books
         </NavLink>
+        
         <NavLink
           to="/About"
           className={location.pathname === "/About" ? "active" : ""}
         >
           About Us
         </NavLink>
-        <NavLink
-          to="/Home"
-          className={location.pathname === "/Home" ? "active" : ""}
-        >
-          Contacts
-        </NavLink>
+        <a href="#contacts">Contacts</a>
       </ul>
       <div className="configs">
         <a href="">

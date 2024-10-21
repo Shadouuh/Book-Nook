@@ -1,19 +1,35 @@
 a {
   font-weight: 500;
   text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 4px 12px;
   margin: 2px;
+  border-bottom: 2px solid transparent;
+}
+a:hover{
+  transform: translateY(-2px);
+}
+ul{
+  display: flex;
 }
 nav {
-  background-color: #02020af4;
+  position: fixed;
+  width: 80%;
+  border-radius: 0px 0px 20px 20px;
+  z-index: 6;
+  background: transparent;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   padding: 5px 0px;
+  transition: ease-in-out  .7s;
+}
+.colored{
+  background: linear-gradient(135deg, #02020a, #02020a, #040d1a, #240324);
+  opacity: 1;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 .navImg {
-  height: 10vh;
+  height: 7vh;
 }
 .configs {
   display: flex;
@@ -26,12 +42,11 @@ nav {
   align-items: center;
 }
 .active {
-  background-color: #040f16;
-  border: solid 2px #fffbfa;
+  border-bottom: 2px solid snow;
   transition: ease 0.3s;
 }
 .active:hover {
-  background-color: #02020a;
+  transform: translateY(-2px);
 }
 .colorH1 {
   color: #ffd670;

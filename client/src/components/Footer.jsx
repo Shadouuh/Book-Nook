@@ -29,7 +29,7 @@ const Footer = () => {
           <NavLink to="/Books" className={"navLink"}>
             Books
           </NavLink>
-          <NavLink to="/Profile" className={"navLink"}>
+          <NavLink to="/Perfil" className={"navLink"}>
             My Profile
           </NavLink>
         </div>
@@ -72,7 +72,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="footerBottom">
+      <div className="footerBottom" id="contacts">
         <hr />
         <p>&copy; 2024 BookNook. Todos los derechos reservados.</p>
       </div>

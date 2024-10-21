@@ -2,6 +2,9 @@
   font-family: "Montserrat";
   src: url(assets/fonts/Montserrat-VariableFont_wght.ttf);
 }
+html{
+  scroll-behavior: smooth;
+}
 * {
   font-family: "Montserrat";
   color: #fffbfa;
@@ -9,12 +12,18 @@
   padding: 0;
 }
 body {
-  background: url("./assets/images/CofeeBookBG.png");
-  height: fit-content;
+  
+  background: linear-gradient(135deg, #02020af4, #02020af4, #040d1af4, #192208d7, #240324f4);
+  background-color: #4242fad7;
+  height: fit;
   background-size: cover;
   object-fit: cover;
 }
+hr{
+  width: 85%;
+}
 main {
+  margin-top: 8vh;
   display: flex;
   flex-direction: column;
   min-height: 75vh;
@@ -22,4 +31,9 @@ main {
   padding: 5vh 0;
   justify-content: center;
   align-items: center;
+}
+header{
+  width: 100vw;
+  display: flex;
+  justify-content: center;
 }

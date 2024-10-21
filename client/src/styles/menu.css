@@ -15,8 +15,9 @@
 
 .dropdownMenu {
   position: absolute;
+  flex-direction: column;
+  border-radius: 10px;
   background-color: white;
-  border-radius: 20px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
   list-style: none;
   padding: 0;
@@ -37,15 +38,22 @@
   color: black;
   display: block;
 }
-
-.dropdownMenu li:hover {
-  background-color: #f1f1f1;
-  border: solid 1px #02020a;
-  border-radius: 20px;
+.dropdownMenu li:first-child{
+  border-radius: 10px 10px 0px 0px;
+}
+.dropdownMenu li:last-child{
+  border-radius: 0px 0px 10px 10px;
 }
 
+.dropdownMenu li:hover {
+  cursor: pointer;
+  background-color: #f1f1f1;
+}
+.dropdownMenu li a:hover{
+  transform: scale(1);
+}
 .dropdownButton:hover {
-  transform: scale(1.04);
+  transform: scale(1.01);
 }
 .tableDrop {
   background-color: #ffffff;

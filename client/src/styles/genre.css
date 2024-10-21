@@ -1,0 +1,12 @@
+.genre {
+  padding: 14px 18px;
+  width: fit-content;
+  border-radius: 10px;
+  border: 2px solid black;
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+.genre:hover {
+  transform: scale(1.05);
+}

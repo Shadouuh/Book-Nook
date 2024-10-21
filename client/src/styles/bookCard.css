@@ -1,0 +1,43 @@
+.bookContainer {
+    display: flex;
+    align-items: center;
+    background-color: #0F0E0E;
+    border: 4px solid white;
+    padding: 20px;
+}
+
+.bookCard {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.bookImg {
+    height: 30vh;
+    width: 25vh;
+}
+
+.bookInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform: scale(1);
+    overflow: hidden;
+    width: 25vw;
+    transition: 0.3s ease-in-out;
+}
+
+.bookInfoTransparent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 0px;
+    transform: scale(0);
+    transition: 0.3s ease-in-out;
+}

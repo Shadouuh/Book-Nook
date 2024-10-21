@@ -1,0 +1,112 @@
+.contImg{
+    width: 100%;
+    height: 75vh;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    padding-top: 5vh;
+    left: 0;
+    justify-content: space-around;
+    
+}
+.content{
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 45%;
+}
+.contImg img{
+    height: 60vh;
+    border-radius: 12px;
+}
+.btnContent{
+    border: none;
+    border: 2px solid #FAFAFF;
+    background-color: transparent;
+    color: snow;
+    padding: 12px 18px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: ease-in-out .2s;
+}
+.btnContent:hover{
+    background-color: #FAFAFF;
+    color: black;
+    transform: translateY(-1px);
+
+
+}
+.btnContent:active{
+    transform: translateY(2px);
+}
+.containerCard{
+    display: flex;
+    border: solid 2px white;
+    padding: 20px;
+    gap: 20px;
+    max-width: 87.5vw;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.sectionCards{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    gap: 20px;
+}
+#firstSec{
+    margin-top: 70vh;
+}
+.sectionCategory{
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 20px;
+    height: fit-content;
+}
+.categoria{
+    width: 60vh;
+    height: 50vh;
+    border-radius: 2px;
+    display: flex;
+    transition: ease-in-out .2s;
+}
+#cat1{
+    background: url(../assets/images/CofeeBookBG.png);
+    background-size: cover;
+    object-fit: cover;
+}
+#cat2{
+    background: url(../assets/images/people-relaxing-countryside.jpg);
+    background-size: cover;
+    object-fit: cover;
+}
+#cat3{
+    background: url(../assets/images/background1.jpg);
+    background-size: cover;
+    object-fit: cover;
+}
+.color{
+    border-radius: 2px;
+    background:  linear-gradient(135deg, #02020ae5, #02020adc, #040d1aab, #240324bd);
+    border: solid white 2px;
+    width: 100%;
+    display: grid;
+    place-content: center;
+    height: 100%;
+    position: relative;
+}
+.categoria:hover{
+    transform: scale(1.007);
+    cursor: pointer;
+}

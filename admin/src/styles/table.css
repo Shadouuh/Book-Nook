@@ -1,0 +1,77 @@
+.tableContainer {
+    overflow-x: auto; 
+    width: 100%; 
+    display: grid;
+    place-content: center;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2%;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .th {
+    background-color: #02020af4;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    color: #fffbfa;
+    border-bottom: 2px solid #ddd;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .td {
+    font-size: 14px;
+    font-weight: 500;
+    color: #02111b;
+    background-color: #fffbfa;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    padding: 12px;
+    transition: background-color 0.2s;
+  }
+  
+  .td:hover {
+    background-color: #f7f7f7;
+  }
+  
+  .editButton,
+  .deleteButton {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+    min-width: 100px;
+  }
+  
+  .editButton {
+    background-color: #4caf50;
+  }
+  
+  .editButton:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+  }
+  
+  .deleteButton {
+    background-color: #f44336;
+    margin-left: 10px;
+  }
+  
+  .deleteButton:hover {
+    background-color: #d32f2f;
+    transform: scale(1.05);
+  }
+  
