@@ -42,6 +42,7 @@ app.post('/login', async (req, res) => {
         const { user } = req.body;
         const clave = anju.encrypt(user.clave);
 
+        let login;
         let resultAlias;
 
         const [result] = await conex.execute(
@@ -52,12 +53,17 @@ app.post('/login', async (req, res) => {
         if (result.length == 0) {
             [resultAlias] = await conex.execute('SELECT id_login FROM usuarios WHERE alias = ?', [user.key]);
             if (resultAlias.length == 0) return handleError(res, 'no se encotro la cuenta', null, 404);
-        }
 
-        const [login] = await conex.execute(
-            'SELECT id_login, tipo FROM login WHERE (email = ? OR telefono = ? OR id_login = ?) AND clave=?',
-            [user.key, user.key, resultAlias[0].id_login, clave]
-        );
+            [login] = await conex.execute(
+                'SELECT id_login, tipo FROM login WHERE id_login = ? AND clave=?',
+                [resultAlias[0].id_login, clave]
+            );
+        } else {
+            [login] = await conex.execute(
+                'SELECT id_login, tipo FROM login WHERE (email = ? OR telefono = ?) AND clave=?',
+                [user.key, user.key, clave]
+            );
+        }
 
         if (login.length == 0) return handleError(res, 'Credenciales incorrectas', null, 400);
 

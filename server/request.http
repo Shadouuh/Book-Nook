@@ -54,7 +54,7 @@ Content-Type: application/json
 
 {   
     "user": {
-        "key": "aña Juan",
+        "key": "mail.com.ar",
         "clave": "contra1234"
     }
 }
