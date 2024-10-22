@@ -1,4 +1,4 @@
-GET http://localhost:3000/api/login HTTP/1.1
+GET http://localhost:3000/api/libros HTTP/1.1
 
 ###
 
@@ -9,10 +9,12 @@ Content-Type: application/json
     "dates": {
         "titulo": "libro falso",
         "descripcion": "Como todo en la vida esto no es mas que una simple ilusion",
+        "clasificacion": "Todos",
+        "num_paginas": 111,
         "precio": 2000,
         "stock": 1,
-        "es_fisico": 0,
-        "fecha_publicacion": "2001-09-11T03:00:00.000Z",
+        "es_fisico": 0, 
+        "año_publicacion": 2001,
         "id_editorial": 1,
         "id_autor": 1
     }
@@ -20,21 +22,23 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/api/libros/6 HTTP/1.1
+DELETE http://localhost:3000/api/libros/9 HTTP/1.1
 
 ###
 
-PUT http://localhost:3000/api/libros/11 HTTP/1.1
+PUT http://localhost:3000/api/libros/8 HTTP/1.1
 Content-Type: application/json
 
 {
     "dates": {
-        "titulo": "NADA",
-        "descripcion": "Adolecencia resumen",
-        "precio": 0,
-        "stock": 0,
-        "es_fisico": 0,
-        "fecha_publicacion": "2000-01-01T03:00:00.000Z",
+        "titulo": "libro real",
+        "descripcion": "mas real que las mujeres",
+        "clasificacion": "+18",
+        "num_paginas": 1,
+        "precio": 3000,
+        "stock": 21,
+        "es_fisico": 1, 
+        "año_publicacion": "2002",
         "id_editorial": 1,
         "id_autor": 1
     }
@@ -124,7 +128,6 @@ Content-Type: application/json
 
 {
     "cart": {
-        "cantidad": 5,
         "id_libro": 1,
         "id_usuario": 1
     }

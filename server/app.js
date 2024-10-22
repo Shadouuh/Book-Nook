@@ -129,10 +129,15 @@ app.post('/carrito/insertar', async (req, res) => {
 
         if (resultCart.length == 0) handleError(res, 'Error al obtener el id_carrito', null, 404);
 
+        const [resultBook] = await conex.query('SELECT stock FROM libros WHERE stock > 0');
+        if(resultBook.length == 0) handleError(res, 'No hay stock del libro');
+
         await conex.execute(
-            'INSERT INTO carrito_items(cantidad, id_carrito, id_libro) VALUES(?, ?, ?)',
-            [cart.cantidad, resultCart[0].id_carrito, cart.id_libro]
+            'INSERT INTO carrito_items(id_carrito, id_libro) VALUES(?, ?)',
+            [resultCart[0].id_carrito, cart.id_libro]
         );
+
+        await conex.query(`UPDATE libros SET stock = (${resultBook[0].stock} - 1) WHERE id_libro = ${cart.id_libro}`);
 
         res.status(201).send({ message: 'Se guardo el item en el carrito' });
 
@@ -359,8 +364,11 @@ app.post('/api/:tabla', async (req, res) => {
 
     try {
         const [columns] = await conex.execute('DESC ' + tabla);
-        const columnFields = columns.map(col => col.Field);
-        const columnValues = columnFields.map(col => dates[col]);
+        let columnFields = columns.map(col => col.Field);
+        let columnValues = columnFields.map(col => dates[col]);
+
+        columnFields.shift();
+        columnValues.shift();        
 
         const query = `INSERT INTO ${tabla} (${columnFields.join(', ')}) VALUES (${columnFields.map(() => '?').join(', ')})`;
         await conex.execute(query, columnValues);

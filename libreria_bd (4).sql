@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-10-2024 a las 19:30:28
+-- Tiempo de generación: 22-10-2024 a las 02:31:06
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -88,7 +88,9 @@ CREATE TABLE `carrito_items` (
 
 INSERT INTO `carrito_items` (`id_item`, `id_carrito`, `id_libro`) VALUES
 (2, 1, 3),
-(3, 1, 1);
+(3, 1, 1),
+(5, 1, 1),
+(6, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -175,10 +177,12 @@ CREATE TABLE `libros` (
   `id_libro` int(11) NOT NULL,
   `titulo` varchar(100) DEFAULT NULL,
   `descripcion` text DEFAULT NULL,
+  `clasificacion` enum('Todos','+3','+7','+12','+16','+18') DEFAULT NULL,
+  `num_paginas` int(11) DEFAULT NULL,
   `precio` float NOT NULL,
   `stock` int(11) NOT NULL,
   `es_fisico` tinyint(1) NOT NULL,
-  `fecha_publicacion` date NOT NULL,
+  `año_publicacion` year(4) NOT NULL,
   `id_editorial` int(11) DEFAULT NULL,
   `id_autor` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
@@ -187,9 +191,10 @@ CREATE TABLE `libros` (
 -- Volcado de datos para la tabla `libros`
 --
 
-INSERT INTO `libros` (`id_libro`, `titulo`, `descripcion`, `precio`, `stock`, `es_fisico`, `fecha_publicacion`, `id_editorial`, `id_autor`) VALUES
-(1, 'Dos veces junio', 'Durante la epoca de la dictatura y el mundial, Argentina paso por todo', 110000, 12, 1, '2002-01-01', 1, 1),
-(3, 'Fahrenheit 451', 'Una novela utópica en donde se prohiben los libros en la sociedad', 14000, 23, 1, '1953-10-19', 1, 1);
+INSERT INTO `libros` (`id_libro`, `titulo`, `descripcion`, `clasificacion`, `num_paginas`, `precio`, `stock`, `es_fisico`, `año_publicacion`, `id_editorial`, `id_autor`) VALUES
+(1, 'Dos veces junio', 'Durante la epoca de la dictatura y el mundial, Argentina paso por todo', NULL, NULL, 110000, 11, 1, '2002', 1, 1),
+(3, 'Fahrenheit 451', 'Una novela utópica en donde se prohiben los libros en la sociedad', NULL, NULL, 14000, 23, 1, '1953', 1, 1),
+(8, 'libro real', 'mas real que las mujeres', '+18', 1, 3000, 21, 1, '2002', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -624,7 +629,7 @@ ALTER TABLE `carrito`
 -- AUTO_INCREMENT de la tabla `carrito_items`
 --
 ALTER TABLE `carrito_items`
-  MODIFY `id_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
@@ -654,7 +659,7 @@ ALTER TABLE `encargados`
 -- AUTO_INCREMENT de la tabla `libros`
 --
 ALTER TABLE `libros`
-  MODIFY `id_libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `libro_categoria`
