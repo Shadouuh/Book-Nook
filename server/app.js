@@ -130,7 +130,7 @@ app.post('/carrito/insertar', async (req, res) => {
         if (resultCart.length == 0) handleError(res, 'Error al obtener el id_carrito', null, 404);
 
         const [resultBook] = await conex.query('SELECT stock FROM libros WHERE stock > 0');
-        if(resultBook.length == 0) handleError(res, 'No hay stock del libro');
+        if (resultBook.length == 0) handleError(res, 'No hay stock del libro');
 
         await conex.execute(
             'INSERT INTO carrito_items(id_carrito, id_libro) VALUES(?, ?)',
@@ -277,13 +277,20 @@ app.post('/categorias/guardar', async (req, res) => {
 
 //-> Select, show & DESC <-
 
+//Order by
+
+
+
+
+
+
 //Show books
 app.get('/libros/ver/:id', async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     let resultBooks = [];
 
     try {
-        
+
         let [books] = await conex.query(`SELECT * FROM libros WHERE id_libro = ${id}`);
 
         if (books.length > 0) {
@@ -291,6 +298,12 @@ app.get('/libros/ver/:id', async (req, res) => {
                 const [autor] = await conex.query(`SELECT nombre, apellido FROM autores WHERE id_autor = ${book.id_autor}`);
                 const [editorial] = await conex.query(`SELECT nombre FROM editoriales WHERE id_editorial = ${book.id_editorial}`);
                 const [imagenes] = await conex.query(`SELECT archivo, tipo_angulo FROM libro_imgs WHERE id_libro = ${book.id_libro}`);
+                const [id_categoria] = await conex.query(`SELECT id_categoria FROM libro_categoria WHERE id_libro = ${book.id_libro}`);
+
+                if (id_categoria.length == 0) return handleError(res, 'No se encotraron las categorias', null, 404);
+
+                const [categorias] = await conex.query(`SELECT nombre FROM categorias WHERE id_categoria = ${id_categoria[0].id_categoria}`);
+                book.categorias = categorias;
 
                 book.editorial = editorial.length > 0 ? editorial[0].nombre : null;
                 book.autor = autor.length > 0 ? autor[0] : null;
@@ -301,7 +314,7 @@ app.get('/libros/ver/:id', async (req, res) => {
         } else {
             return handleError(res, 'No hay libros', null, 404);
         }
-        
+
         res.status(200).send({ book: resultBooks });
 
     } catch (err) {
@@ -309,7 +322,23 @@ app.get('/libros/ver/:id', async (req, res) => {
     }
 });
 
+//Select by order
+app.get('/api/:tabla/ordenar', async (req, res) => {
+    const { tabla } = req.params;
 
+    const [columns] = await conex.execute('DESC ' + tabla);
+    const columnFields = columns.map(col => col.Field);
+    console.log(columnFields);
+    const orden = columnFields.find(req.query[0]);
+    console.log(orden);
+
+    try {
+        const [results] = await conex.execute(`SELECT * FROM ${tabla} ORDER BY ${orden} DESC`);
+        res.send({ resultados: results });
+    } catch (err) {
+        handleError(res, 'Error en la consulta', err);
+    }
+});
 
 // Select by id
 app.get('/api/:tabla/:id', async (req, res) => {
@@ -321,7 +350,7 @@ app.get('/api/:tabla/:id', async (req, res) => {
 
         const [results] = await conex.execute(`SELECT * FROM ${tabla} WHERE ${primaryKey} = ?`, [id]);
 
-        if (results.length === 0) return res.status(404).send({ message: 'No se encontró el elemento' });
+        if (results.length == 0) return res.status(404).send({ message: 'No se encontró el elemento' });
 
         res.send({ resultados: results });
     } catch (err) {
@@ -368,7 +397,7 @@ app.post('/api/:tabla', async (req, res) => {
         let columnValues = columnFields.map(col => dates[col]);
 
         columnFields.shift();
-        columnValues.shift();        
+        columnValues.shift();
 
         const query = `INSERT INTO ${tabla} (${columnFields.join(', ')}) VALUES (${columnFields.map(() => '?').join(', ')})`;
         await conex.execute(query, columnValues);
@@ -386,7 +415,7 @@ app.put('/api/:tabla/:id', async (req, res) => {
 
     try {
         const [columns] = await conex.execute('DESC ' + tabla);
-        const primaryKey = columns.find(col => col.Key === 'PRI').Field;
+        const primaryKey = columns.find(col => col.Key == 'PRI').Field;
         const columnFields = columns.map(col => col.Field).slice(1);
         const columnValues = columnFields.map(col => dates[col]);
 
@@ -405,16 +434,15 @@ app.delete('/api/:tabla/:id', async (req, res) => {
 
     try {
         const [columns] = await conex.execute('DESC ' + tabla);
-        const primaryKey = columns.find(col => col.Key === 'PRI').Field;
+        const primaryKey = columns.find(col => col.Key == 'PRI').Field;
 
         const query = `DELETE FROM ${tabla} WHERE ${primaryKey} = ?`;
         const [results] = await conex.execute(query, [id]);
 
-        if (results.affectedRows === 0) return res.status(404).send({ message: 'Elemento no encontrado' });
+        if (results.affectedRows == 0) return res.status(404).send({ message: 'Elemento no encontrado' });
 
         res.send({ message: `Elemento con el ${primaryKey} ${id} eliminado` });
     } catch (err) {
-        //<CENTER></CENTER>
         handleError(res, 'Error al eliminar el elemento', err);
     }
 });
