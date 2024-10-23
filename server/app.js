@@ -4,9 +4,11 @@ const path = require('path');
 const cors = require('cors');
 const anju = require('anju-js');
 
+process.loadEnvFile();
+
 //Se crea la app
 const app = express();
-const port = 3000;
+const port = process.env.API_PORT || 3001;
 
 // Conexión
 const createConnection = require(path.join(__dirname, 'config', 'conexBD'));

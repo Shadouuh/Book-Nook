@@ -1,12 +1,14 @@
 const mysql = require('mysql2/promise');
 
+process.loadEnvFile();
+
 async function createConnection() {
     try {
         const conex = await mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: '',
-            database: 'libreria_bd'
+            host: process.env.host,
+            user: process.env.user,
+            password: process.env.pass,
+            database: process.env.db
         });
 
         console.log('Conexion exitosa!!!');
