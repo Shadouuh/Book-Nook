@@ -22,11 +22,11 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/api/libros/9 HTTP/1.1
+DELETE http://localhost:3000/api/libros/10 HTTP/1.1
 
 ###
 
-PUT http://localhost:3000/api/libros/8 HTTP/1.1
+PUT http://localhost:3000/api/libros/10 HTTP/1.1
 Content-Type: application/json
 
 {
@@ -46,14 +46,14 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3000/api/libros/1 HTTP/1.1
+GET http://localhost:3000/api/libros/ordenar/titulo HTTP/1.1
 
 ###
 
 GET http://localhost:3000/api/login HTTP/1.1
 
 ###
-POST http://localhost:3000/login
+POST http://localhost:3000/user/login
 Content-Type: application/json
 
 {   
@@ -65,7 +65,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:3000/register
+POST http://localhost:3000/user/register
 Content-Type: application/json
 
 { 
@@ -150,4 +150,4 @@ Content-Type: application/json
 GET http://localhost:3000/libros/ver/3 HTTP/1.1
 
 ###
-GET http://localhost:3000/api/libros/ordernar/?titulo= HTTP/1.1
+GET http://localhost:3000/api/libros/id_libro?orden=desc HTTP/1.1
