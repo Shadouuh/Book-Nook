@@ -167,3 +167,7 @@ GET http://localhost:3000/libros/editorial/De bolsillo HTTP/1.1
 ###
 
 GET http://localhost:3000/libros/clasificacion/+18 HTTP/1.1
+
+###
+
+GET http://localhost:3000/libros/buscar/ HTTP/1.1

@@ -1,6 +1,4 @@
 const path = require('path');
-const { connected } = require('process');
-const { createContext } = require('vm');
 const { router, handleError } = require(path.join(__dirname, '..', 'config', 'setup'));
 
 const createConnection = require(path.join(__dirname, '..', 'config', 'conexBD'));
@@ -14,7 +12,23 @@ init();
 
 
 //busqueda de titulo con LIKE SQL
+router.get('/buscar/:titulo', async (req, res) => {
+    const { titulo } = req.params;
+    
+    try {
 
+        const [books] = await conex.query(
+            `SELECT * FROM libros WHERE titulo LIKE "%${titulo}%"`
+        );
+        
+        if (books.length == 0) handleError(res, 'No se encontraron libros con ese titulo', null, 404);
+
+        res.status(200).send({ resultados: books });
+
+    } catch (err) {
+        handleError(res, 'Error al buscar el libro', err);
+    }
+});
 
 
 
