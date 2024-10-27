@@ -10,44 +10,6 @@ async function init() {
 
 init();
 
-//Show book by id
-app.get('/libros/ver/:id', async (req, res) => {
-    const { id } = req.params;
-    let resultBooks = [];
-
-    try {
-
-        let [books] = await conex.query(`SELECT * FROM libros WHERE id_libro = ${id}`);
-
-        if (books.length > 0) {
-            for (const book of books) {
-                const [autor] = await conex.query(`SELECT nombre, apellido FROM autores WHERE id_autor = ${book.id_autor}`);
-                const [editorial] = await conex.query(`SELECT nombre FROM editoriales WHERE id_editorial = ${book.id_editorial}`);
-                const [imagenes] = await conex.query(`SELECT archivo, tipo_angulo FROM libro_imgs WHERE id_libro = ${book.id_libro}`);
-                const [id_categoria] = await conex.query(`SELECT id_categoria FROM libro_categoria WHERE id_libro = ${book.id_libro}`);
-
-                if (id_categoria.length == 0) return handleError(res, 'No se encotraron las categorias', null, 404);
-
-                const [categorias] = await conex.query(`SELECT nombre FROM categorias WHERE id_categoria = ${id_categoria[0].id_categoria}`);
-                book.categorias = categorias;
-
-                book.editorial = editorial.length > 0 ? editorial[0].nombre : null;
-                book.autor = autor.length > 0 ? autor[0] : null;
-                book.imagenes = imagenes.length > 0 ? imagenes[0] : null;
-
-                resultBooks.push(book);
-            }
-        } else {
-            return handleError(res, 'No hay libros', null, 404);
-        }
-
-        res.status(200).send({ book: resultBooks });
-
-    } catch (err) {
-        handleError(res, 'Error al mostrar los libros', err);
-    }
-});
-
 //Select by order
 router.get('/:tabla/ordenar/:segun', async (req, res) => {
     const { tabla, segun } = req.params;

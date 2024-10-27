@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-10-2024 a las 02:31:06
+-- Tiempo de generación: 27-10-2024 a las 20:04:21
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -30,7 +30,6 @@ SET time_zone = "+00:00";
 CREATE TABLE `autores` (
   `id_autor` int(11) NOT NULL,
   `nombre` varchar(50) DEFAULT NULL,
-  `apellido` varchar(50) DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
   `pais_origen` varchar(50) DEFAULT NULL,
   `biografia` text DEFAULT NULL
@@ -40,9 +39,9 @@ CREATE TABLE `autores` (
 -- Volcado de datos para la tabla `autores`
 --
 
-INSERT INTO `autores` (`id_autor`, `nombre`, `apellido`, `fecha_nacimiento`, `pais_origen`, `biografia`) VALUES
-(1, 'Martin', 'Kohan', '1967-01-24', 'Argentina', 'Escritor, crítico literario y docente. Licenciado y Doctor en Letras por la Universidad de Buenos Aires.'),
-(2, 'Edgar Allan', 'Poe', '1809-01-19', 'Estados unidos', 'Edgar Allan Poe fue un escritor, poeta, crítico y periodista romántico​​ estadounidense, generalmente reconocido como uno de los maestros universales del relato corto, del cual fue uno de los primeros practicantes en su país. Fue renovador de la novela gótica, recordado especialmente por sus cuentos de terror.');
+INSERT INTO `autores` (`id_autor`, `nombre`, `fecha_nacimiento`, `pais_origen`, `biografia`) VALUES
+(1, 'Martin Kohan', '1967-01-24', 'Argentina', 'Escritor, crítico literario y docente. Licenciado y Doctor en Letras por la Universidad de Buenos Aires.'),
+(2, 'Edgar Allan Poe', '1809-01-19', 'Estados unidos', 'Edgar Allan Poe fue un escritor, poeta, crítico y periodista romántico​​ estadounidense, generalmente reconocido como uno de los maestros universales del relato corto, del cual fue uno de los primeros practicantes en su país. Fue renovador de la novela gótica, recordado especialmente por sus cuentos de terror.');
 
 -- --------------------------------------------------------
 
@@ -214,7 +213,8 @@ CREATE TABLE `libro_categoria` (
 
 INSERT INTO `libro_categoria` (`id_lc`, `id_libro`, `id_categoria`) VALUES
 (1, 3, 1),
-(2, 3, 3);
+(2, 3, 3),
+(3, 8, 3);
 
 -- --------------------------------------------------------
 
@@ -659,13 +659,13 @@ ALTER TABLE `encargados`
 -- AUTO_INCREMENT de la tabla `libros`
 --
 ALTER TABLE `libros`
-  MODIFY `id_libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `libro_categoria`
 --
 ALTER TABLE `libro_categoria`
-  MODIFY `id_lc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_lc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `libro_clave`

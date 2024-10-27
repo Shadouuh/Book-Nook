@@ -37,6 +37,10 @@ const handleError = (res, message, err = null, status = 500) => {
 const userRoutes = require(path.join(__dirname, 'routes', 'userRoutes'));
 app.use('/user', userRoutes);
 
+//-> Libros <-
+const bookRoutes = require(path.join(__dirname, 'routes', 'bookRoutes'));
+app.use('/libros', bookRoutes);
+
 //-> Guardados <-
 const savesRoutes = require(path.join(__dirname, 'routes', 'savesRoutes'));
 app.use('/save', savesRoutes);
