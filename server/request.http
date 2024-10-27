@@ -154,19 +154,19 @@ GET http://localhost:3000/api/libros/id_libro?orden=desc HTTP/1.1
 
 ###
 
-GET http://localhost:3000/libros/categoria/utopia HTTP/1.1
+GET http://localhost:3000/libros/categoria/utopia?segun=id_libro&orden=desc HTTP/1.1
 
 ###
 
-GET http://localhost:3000/libros/autor/Martin Kohan HTTP/1.1
+GET http://localhost:3000/libros/autor/Martin Kohan?segun=id_libro&orden=desc HTTP/1.1
 
 ###
 
-GET http://localhost:3000/libros/editorial/De bolsillo HTTP/1.1
+GET http://localhost:3000/libros/editorial/De bolsillo?segun=id_libro&orden=desc HTTP/1.1
 
 ###
 
-GET http://localhost:3000/libros/clasificacion/+18 HTTP/1.1
+GET http://localhost:3000/libros/año_publicacion/2002?segun=id_libro&orden=desc HTTP/1.1
 
 ###
 

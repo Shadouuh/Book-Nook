@@ -14,13 +14,13 @@ init();
 //busqueda de titulo con LIKE SQL
 router.get('/buscar/:titulo', async (req, res) => {
     const { titulo } = req.params;
-    
+
     try {
 
         const [books] = await conex.query(
             `SELECT * FROM libros WHERE titulo LIKE "%${titulo}%"`
         );
-        
+
         if (books.length == 0) handleError(res, 'No se encontraron libros con ese titulo', null, 404);
 
         res.status(200).send({ resultados: books });
@@ -30,12 +30,11 @@ router.get('/buscar/:titulo', async (req, res) => {
     }
 });
 
-
-
-
 //Filter book category
 router.get('/categoria/:valor', async (req, res) => {
     const { valor } = req.params;
+    const segun = req.query.segun || 'titulo';
+    const orden = req.query.orden || 'asc';
     let books = [];
 
     try {
@@ -43,22 +42,20 @@ router.get('/categoria/:valor', async (req, res) => {
             'SELECT id_categoria FROM categorias WHERE nombre = ?',
             [valor]
         )
+
         if (id_categoria.length == 0) handleError(res, 'No se pudo obtener la categoria ' + valor, null, 404);
 
-        const [id_libro] = await conex.execute(
+        let [id_libro] = await conex.execute(
             'SELECT id_libro FROM libro_categoria WHERE id_categoria = ?',
             [id_categoria[0].id_categoria]
         )
         if (id_libro.length == 0) handleError(res, 'No se pudo obtener los datos de la tabla intermedia', null, 404);
 
-        for (const item of id_libro) {
-            [book] = await conex.execute(
-                'SELECT * FROM libros WHERE id_libro = ?',
-                [item.id_libro]
-            );
-            books.push(book);
-        }
-            if (books.length == 0) handleError(res, 'No hay libros con la categoria ' + valor, null, 404);
+        const [books] = await conex.query(
+            `SELECT * FROM libros WHERE id_libro IN (${id_libro.map(id => id.id_libro).join(', ')}) ORDER BY ${segun} ${orden}`
+        );
+
+        if (books.length == 0) handleError(res, 'No hay libros con la categoria ' + valor, null, 404);
 
         res.status(200).send({ resultados: books });
 
@@ -70,6 +67,8 @@ router.get('/categoria/:valor', async (req, res) => {
 //Filter book autor
 router.get('/autor/:valor', async (req, res) => {
     const { valor } = req.params;
+    const segun = req.query.segun || 'titulo';
+    const orden = req.query.orden || 'asc';
 
     try {
         const [id_autor] = await conex.execute(
@@ -79,7 +78,7 @@ router.get('/autor/:valor', async (req, res) => {
         if (id_autor.length == 0) handleError(res, 'No se pudo obtener el autor ' + valor, null, 404);
 
         const [books] = await conex.execute(
-            'SELECT * FROM libros WHERE id_autor = ?',
+            `SELECT * FROM libros WHERE id_autor = ? ORDER BY ${segun} ${orden}`,
             [id_autor[0].id_autor]
         );
         if (books.length == 0) handleError(res, 'No hay libros con el autor ' + valor, null, 404);
@@ -94,6 +93,8 @@ router.get('/autor/:valor', async (req, res) => {
 //Filter book editorial
 router.get('/editorial/:valor', async (req, res) => {
     const { valor } = req.params;
+    const segun = req.query.segun || 'titulo';
+    const orden = req.query.orden || 'asc';
 
     try {
         const [id_editorial] = await conex.execute(
@@ -103,7 +104,7 @@ router.get('/editorial/:valor', async (req, res) => {
         if (id_editorial.length == 0) handleError(res, 'No se pudo obtener la editorial ' + valor, null, 404);
 
         const [books] = await conex.execute(
-            'SELECT * FROM libros WHERE id_editorial = ?',
+            `SELECT * FROM libros WHERE id_editorial = ? ORDER BY ${segun} ${orden}`,
             [id_editorial[0].id_editorial]
         );
         if (books.length == 0) handleError(res, 'No hay libros con la editorial ' + valor, null, 404);
@@ -116,15 +117,17 @@ router.get('/editorial/:valor', async (req, res) => {
 });
 
 //Filter dinamic
-router.get('/:segun/:valor', async (req, res) => {
-    const { segun, valor } = req.params;
+router.get('/:clave/:valor', async (req, res) => {
+    const { clave, valor } = req.params;
+    const segun = req.query.segun || 'titulo';
+    const orden = req.query.orden || 'asc';
 
     try {
         const [books] = await conex.execute(
-            `SELECT * FROM libros WHERE ${segun} = ?`,
+            `SELECT * FROM libros WHERE ${clave} = ? ORDER BY ${segun} ${orden}`,
             [valor]
         );
-        if (books.length == 0) handleError(res, `No hay libros con: ${segun} = ${valor} `, null, 404);
+        if (books.length == 0) handleError(res, `No hay libros con: ${clave} = ${valor} `, null, 404);
 
         res.status(200).send({ resultados: books });
 
