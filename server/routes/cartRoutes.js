@@ -68,16 +68,7 @@ router.get('/items/ver/:id', async (req, res) => {
 
 
 
-
-
-
-
 //Como chuchas se recibe en el fetch
-
-
-
-
-
 
 
 
@@ -101,14 +92,14 @@ router.post('/pedir', async (req, res) => {
             [order.id_usuario]
         );
 
-        if (id_usuario.length == 0) handleError(res, 'No se encontro al usuario', null, 404);
+        if (id_usuario.length == 0) return handleError(res, 'No se encontro al usuario', null, 404);
 
         const [id_carrito] = await conex.execute(
             'SELECT id_carrito FROM carrito WHERE id_usuario = ? AND es_actual = true',
             [order.id_usuario]
         );
 
-        if (id_carrito.length == 0) handleError(res, 'No se encontro el carrito', null, 404);
+        if (id_carrito.length == 0) return handleError(res, 'No se encontro el carrito', null, 404);
 
         await conex.execute(
             'INSERT INTO pedidos(total, estado, fecha_estimada, id_usuario, id_carrito) VALUES(?, "pendiente", ?, ?,?)',
@@ -128,7 +119,7 @@ router.post('/pedir', async (req, res) => {
         res.status(201).send({ message: 'Se pidio el carrito' });
 
     } catch (err) {
-        handleError(res, 'Hubo un error en el carrito', err);
+        return handleError(res, 'Hubo un error en el carrito', err);
     }
 });
 

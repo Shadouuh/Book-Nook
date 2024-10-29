@@ -56,18 +56,5 @@ app.use('/api', apiRoutes);
 
 /* -el insert del libro debe guardar en todas las tablas */
 
-// DESC table
-app.get('/:tabla/desc', async (req, res) => {
-    const { tabla } = req.params;
-
-    try {
-        const [result] = await conex.execute('DESC ' + tabla);
-        if (result.length == 0) return res.status(404).send({ message: 'No se encontró la tabla ' + tabla });
-
-        res.status(200).send({ resultado: result });
-    } catch (err) {
-        handleError(res, 'Error al obtener las columnas de la tabla ' + tabla, err);
-    }
-});
 
 app.listen(port, () => console.log(`Server escuchando en el puerto ${port}!`));

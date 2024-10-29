@@ -18,14 +18,14 @@ router.post('/libro', async (req, res) => {
     try {
         const [result] = await conex.execute(verifi, [save.id_libro, save.id_usuario]);
 
-        if (result.length > 0) return res.status(409).send({ message: 'El libro ya está guardado' });
+        if (result.length > 0) return handleError(res, 'El libro ya está guardado', null, 409);
 
         const query = `INSERT INTO usuario_libro(id_libro, id_usuario) VALUES(?, ?)`;
         await conex.execute(query, [save.id_libro, save.id_usuario]);
 
         res.status(201).send({ message: 'Se guardó el libro' });
     } catch (err) {
-        handleError(res, 'Error al guardar el libro', err);
+        return handleError(res, 'Error al guardar el libro', err);
     }
 });
 
@@ -37,14 +37,14 @@ router.post('/autor', async (req, res) => {
     try {
         const [result] = await conex.execute(verifi, [save.id_autor, save.id_usuario]);
 
-        if (result.length > 0) return res.status(409).send({ message: 'El autor ya está guardado' });
+        if (result.length > 0) return handleError(res, 'El autor ya está guardado', null, 409);
 
         const query = 'INSERT INTO usuario_autor(id_autor, id_usuario) VALUES(?, ?)';
         await conex.execute(query, [save.id_autor, save.id_usuario]);
 
         res.status(201).send({ message: 'Se guardó el autor como favorito' });
     } catch (err) {
-        handleError(res, 'Error al guardar el autor favorito', err);
+        return handleError(res, 'Error al guardar el autor favorito', err);
     }
 });
 
@@ -56,14 +56,14 @@ router.post('/categoria', async (req, res) => {
     try {
         const [result] = await conex.execute(verifi, [save.id_categoria, save.id_usuario]);
 
-        if (result.length > 0) return res.status(409).send({ message: 'La categoría ya está guardada' });
+        if (result.length > 0) return handleError(res, 'La categoría ya está guardada', null, 409);
 
         const query = `INSERT INTO usuario_categoria(id_categoria, id_usuario) VALUES(?, ?)`;
         await conex.execute(query, [save.id_categoria, save.id_usuario]);
 
         res.status(201).send({ message: 'Se guardó la categoría como favorita' });
     } catch (err) {
-        handleError(res, 'Error al guardar la categoría favorita', err);
+        return handleError(res, 'Error al guardar la categoría favorita', err);
     }
 });
 

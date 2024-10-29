@@ -38,7 +38,21 @@ router.get('/:tabla/id/:id', async (req, res) => {
 
         res.send({ resultados: results });
     } catch (err) {
-        handleError(res, 'Error en la consulta', err);
+        return handleError(res, 'Error en la consulta', err);
+    }
+});
+
+// DESC table
+router.get('/:tabla/desc', async (req, res) => {
+    const { tabla } = req.params;
+
+    try {
+        const [result] = await conex.execute('DESC ' + tabla);
+        if (result.length == 0) return res.status(404).send({ message: 'No se encontró la tabla ' + tabla });
+
+        res.status(200).send({ resultado: result });
+    } catch (err) {
+        handleError(res, 'Error al obtener las columnas de la tabla ' + tabla, err);
     }
 });
 
@@ -51,11 +65,11 @@ router.get('/:tabla', async (req, res) => {
     try {
         const [results] = await conex.execute('SELECT * FROM ' + tabla);
 
-        if (results.length == 0) handleError(res, 'No se encontraron elementos', null, 404);
+        if (results.length == 0) return handleError(res, 'No se encontraron elementos', null, 404);
 
         res.send({ resultados: results });
     } catch (err) {
-        handleError(res, 'Error en la consulta', err);
+        return handleError(res, 'Error en la consulta', err);
     }
 });
 

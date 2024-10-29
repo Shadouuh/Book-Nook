@@ -151,26 +151,19 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3000/libro/ver/1 HTTP/1.1
+
+GET http://localhost:3000/libro/ver HTTP/1.1
+
+
+###
+GET http://localhost:3000/libro/ver/3 HTTP/1.1
 
 ###
 GET http://localhost:3000/api/libro/id_libro?orden=desc HTTP/1.1
 
 ###
 
-GET http://localhost:3000/libro/categoria/utopia?segun=id_libro&orden=desc HTTP/1.1
-
-###
-
-GET http://localhost:3000/libro/autor/Martin Kohan?segun=id_libro&orden=desc HTTP/1.1
-
-###
-
-GET http://localhost:3000/libro/editorial/De bolsillo?segun=id_libro&orden=desc HTTP/1.1
-
-###
-
-GET http://localhost:3000/libro/año_publicacion/2002?segun=id_libro&orden=desc HTTP/1.1
+GET http://localhost:3000/libro/filtrar?categoria=utopia&autor=Martin Kohan HTTP/1.1
 
 ###
 
