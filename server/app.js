@@ -35,31 +35,26 @@ const handleError = (res, message, err = null, status = 500) => {
 
 //-> Login y registro <-
 const userRoutes = require(path.join(__dirname, 'routes', 'userRoutes'));
-app.use('/user', userRoutes);
+app.use('/usuario', userRoutes);
 
 //-> Libros <-
 const bookRoutes = require(path.join(__dirname, 'routes', 'bookRoutes'));
-app.use('/libros', bookRoutes);
+app.use('/libro', bookRoutes);
 
 //-> Guardados <-
 const savesRoutes = require(path.join(__dirname, 'routes', 'savesRoutes'));
-app.use('/save', savesRoutes);
-
-//-> API generales <-
-const apiRoutes = require(path.join(__dirname, 'routes', 'apiRoutes'));
-app.use('/api', apiRoutes);
+app.use('/guardar', savesRoutes);
 
 //-> Cart <-
 const cartRoutes = require(path.join(__dirname, 'routes', 'cartRoutes'));
 app.use('/carrito', cartRoutes);
 
+//-> API generales <-
+const apiRoutes = require(path.join(__dirname, 'routes', 'apiRoutes'));
+app.use('/api', apiRoutes);
 
 
 /* -el insert del libro debe guardar en todas las tablas */
-
-
-//Order by
-
 
 // DESC table
 app.get('/:tabla/desc', async (req, res) => {

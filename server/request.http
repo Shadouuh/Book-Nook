@@ -83,7 +83,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:3000/api/libros/guardar 
+POST http://localhost:3000/guardar/libro 
 Content-Type: application/json
 
 {
@@ -95,19 +95,19 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:3000/api/categorias/guardar
+POST http://localhost:3000/guardar/categoria
 Content-Type: application/json
 
 {
     "save": {
-        "id_categoria": 2,
+        "id_categoria": 3,
         "id_usuario": 1
     }
 }
 
 ###
 
-POST http://localhost:3000/api/autores/guardar
+POST http://localhost:3000/guardar/autor
 Content-Type: application/json
 
 {
@@ -120,6 +120,10 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3000/usuarios/desc HTTP/1.1
+
+###
+
+GET http://localhost:3000/carrito/items/ver/1 HTTP/1.1
 
 ###
 
@@ -147,27 +151,31 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3000/libros/ver/3 HTTP/1.1
+GET http://localhost:3000/libro/ver/1 HTTP/1.1
 
 ###
-GET http://localhost:3000/api/libros/id_libro?orden=desc HTTP/1.1
-
-###
-
-GET http://localhost:3000/libros/categoria/utopia?segun=id_libro&orden=desc HTTP/1.1
+GET http://localhost:3000/api/libro/id_libro?orden=desc HTTP/1.1
 
 ###
 
-GET http://localhost:3000/libros/autor/Martin Kohan?segun=id_libro&orden=desc HTTP/1.1
+GET http://localhost:3000/libro/categoria/utopia?segun=id_libro&orden=desc HTTP/1.1
 
 ###
 
-GET http://localhost:3000/libros/editorial/De bolsillo?segun=id_libro&orden=desc HTTP/1.1
+GET http://localhost:3000/libro/autor/Martin Kohan?segun=id_libro&orden=desc HTTP/1.1
 
 ###
 
-GET http://localhost:3000/libros/año_publicacion/2002?segun=id_libro&orden=desc HTTP/1.1
+GET http://localhost:3000/libro/editorial/De bolsillo?segun=id_libro&orden=desc HTTP/1.1
 
 ###
 
-GET http://localhost:3000/libros/buscar/ HTTP/1.1
+GET http://localhost:3000/libro/año_publicacion/2002?segun=id_libro&orden=desc HTTP/1.1
+
+###
+
+GET http://localhost:3000/libro/buscar/far HTTP/1.1
+
+###
+
+GET http://localhost:3000/api/libros/id/1 HTTP/1.1

@@ -1,4 +1,5 @@
 const path = require('path');
+const { execArgv } = require('process');
 const { router, handleError } = require(path.join(__dirname, '..', 'config', 'setup'));
 
 const createConnection = require(path.join(__dirname, '..', 'config', 'conexBD'));
@@ -19,7 +20,7 @@ router.get('/:tabla/ordenar/:segun', async (req, res) => {
         const [results] = await conex.execute(`SELECT * FROM ${tabla} ORDER BY ${segun} ${orden}`);
         res.send({ resultados: results });
     } catch (err) {
-        handleError(res, 'Error en la consulta', err);
+        return handleError(res, 'Error en la consulta', err);
     }
 });
 
@@ -33,7 +34,7 @@ router.get('/:tabla/id/:id', async (req, res) => {
 
         const [results] = await conex.execute(`SELECT * FROM ${tabla} WHERE ${primaryKey} = ?`, [id]);
 
-        if (results.length == 0) return res.status(404).send({ message: 'No se encontró el elemento' });
+        if (results.length == 0) return handleError(res, 'No se encontró el elemento', null, 404);
 
         res.send({ resultados: results });
     } catch (err) {
@@ -49,6 +50,9 @@ router.get('/:tabla', async (req, res) => {
 
     try {
         const [results] = await conex.execute('SELECT * FROM ' + tabla);
+
+        if (results.length == 0) handleError(res, 'No se encontraron elementos', null, 404);
+
         res.send({ resultados: results });
     } catch (err) {
         handleError(res, 'Error en la consulta', err);
@@ -73,7 +77,7 @@ router.post('/:tabla', async (req, res) => {
 
         res.status(201).send({ message: 'Se insertó correctamente en ' + tabla });
     } catch (err) {
-        handleError(res, 'Error al insertar los datos', err);
+        return handleError(res, 'Error al insertar los datos', err);
     }
 });
 
@@ -93,7 +97,7 @@ router.put('/:tabla/:id', async (req, res) => {
 
         res.status(201).send({ message: `Elemento con el ${primaryKey} ${id} actualizado` });
     } catch (err) {
-        handleError(res, 'Error al actualizar el elemento', err);
+        return handleError(res, 'Error al actualizar el elemento', err);
     }
 });
 
@@ -108,11 +112,11 @@ router.delete('/:tabla/:id', async (req, res) => {
         const query = `DELETE FROM ${tabla} WHERE ${primaryKey} = ?`;
         const [results] = await conex.execute(query, [id]);
 
-        if (results.affectedRows == 0) return res.status(404).send({ message: 'Elemento no encontrado' });
+        if (results.affectedRows == 0) return handleError(res, 'Elemento no encontrado', null, 404);
 
         res.send({ message: `Elemento con el ${primaryKey} ${id} eliminado` });
     } catch (err) {
-        handleError(res, 'Error al eliminar el elemento', err);
+        return handleError(res, 'Error al eliminar el elemento', err);
     }
 });
 

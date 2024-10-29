@@ -20,10 +20,10 @@ router.post('/insertar', async (req, res) => {
             [cart.id_usuario]
         )
 
-        if (resultCart.length == 0) handleError(res, 'Error al obtener el id_carrito', null, 404);
+        if (resultCart.length == 0) return handleError(res, 'Error al obtener el id_carrito', null, 404);
 
         const [resultBook] = await conex.query('SELECT stock FROM libros WHERE stock > 0');
-        if (resultBook.length == 0) handleError(res, 'No hay stock del libro');
+        if (resultBook.length == 0) return handleError(res, 'No hay stock del libro');
 
         await conex.execute(
             'INSERT INTO carrito_items(id_carrito, id_libro) VALUES(?, ?)',
@@ -35,12 +35,12 @@ router.post('/insertar', async (req, res) => {
         res.status(201).send({ message: 'Se guardo el item en el carrito' });
 
     } catch (err) {
-        handleError(res, 'Error al guardar en el carrito', err);
+        return handleError(res, 'Error al guardar en el carrito', err);
     }
 });
 
 //Show items
-router.get('/ver/:id', async (req, res) => {
+router.get('/items/ver/:id', async (req, res) => {
     const { id } = req.params;
     let resultBooks = [];
 
@@ -50,21 +50,44 @@ router.get('/ver/:id', async (req, res) => {
             [id]
         )
 
+        if (resultCart.length == 0) return handleError(res, 'No se encontro el carrito actual', null, 404);
+
         const [resultItems] = await conex.execute(
             'SELECT id_libro FROM carrito_items WHERE id_carrito = ?',
             [resultCart[0].id_carrito]
         );
 
-        for (const item of resultItems) {
-            const book = await fetch(`http://localhost:3000/libros/ver/${item.id_libro}`);
+        console.log(resultItems);
 
-            resultBooks.push(await book.json());
+        if (resultItems.length == 0) return handleError(res, 'No se encontraron o no hay items', null, 404);
+
+        for (const item of resultItems) {
+            let book = await fetch(`http://localhost:3000/libro/ver/${item.id_libro}`);
+
+            console.log(await book.json());
+
+
+
+
+
+
+
+//Como chuchas se recibe en el fetch
+
+
+
+
+
+
+
+
+            resultBooks.push(book.body);
         }
 
         res.status(200).send({ resultBooks });
 
     } catch (err) {
-        handleError(res, 'Hubo un error al mostrar los items del carrito', err);
+        return handleError(res, 'Hubo un error al mostrar los items del carrito', err);
     }
 });
 
