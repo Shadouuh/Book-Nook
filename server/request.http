@@ -119,7 +119,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3000/usuarios/desc HTTP/1.1
+GET http://localhost:3000/api/login/desc HTTP/1.1
 
 ###
 
@@ -156,7 +156,7 @@ GET http://localhost:3000/libro/ver HTTP/1.1
 
 
 ###
-GET http://localhost:3000/libro/ver/3 HTTP/1.1
+GET http://localhost:3000/libro/ver/1 HTTP/1.1
 
 ###
 GET http://localhost:3000/api/libro/id_libro?orden=desc HTTP/1.1
@@ -167,7 +167,7 @@ GET http://localhost:3000/libro/filtrar?categoria=utopia&autor=Martin Kohan HTTP
 
 ###
 
-GET http://localhost:3000/libro/buscar/far HTTP/1.1
+GET http://localhost:3000/libro/buscar/fa HTTP/1.1
 
 ###
 

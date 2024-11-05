@@ -30,13 +30,13 @@ router.get('/buscar/:titulo', async (req, res) => {
     }
 });
 
-//Show book by id
+//Show books
 router.get('/ver', async (req, res) => {
     let resultBooks = [];
 
     try {
 
-        let [books] = await conex.query('SELECT * FROM libros'); n
+        let [books] = await conex.query('SELECT * FROM libros');
 
         if (books.length > 0) {
             for (const book of books) {
@@ -75,31 +75,29 @@ router.get('/ver/:id', async (req, res) => {
 
     try {
 
-        let [books] = await conex.query(`SELECT * FROM libros WHERE id_libro = ${id}`);
+        let [book] = await conex.query(`SELECT * FROM libros WHERE id_libro = ${id}`);
 
-        if (books.length > 0) {
-            for (const book of books) {
-                const [autor] = await conex.query(`SELECT nombre FROM autores WHERE id_autor = ${book.id_autor}`);
-                const [editorial] = await conex.query(`SELECT nombre FROM editoriales WHERE id_editorial = ${book.id_editorial}`);
-                const [imagenes] = await conex.query(`SELECT archivo, tipo_angulo FROM libro_imgs WHERE id_libro = ${book.id_libro}`);
-                const [id_categoria] = await conex.query(`SELECT id_categoria FROM libro_categoria WHERE id_libro = ${book.id_libro}`);
+        if (book.length > 0) {
+            const [autor] = await conex.query(`SELECT nombre FROM autores WHERE id_autor = ${book[0].id_autor}`);
+            const [editorial] = await conex.query(`SELECT nombre FROM editoriales WHERE id_editorial = ${book[0].id_editorial}`);
+            const [imagenes] = await conex.query(`SELECT archivo, tipo_angulo FROM libro_imgs WHERE id_libro = ${book[0].id_libro}`);
+            const [id_categoria] = await conex.query(`SELECT id_categoria FROM libro_categoria WHERE id_libro = ${book[0].id_libro}`);
 
-                if (id_categoria.length == 0) return handleError(res, 'No se encotraron las categorias', null, 404);
+            if (id_categoria.length == 0) return handleError(res, 'No se encotraron las categorias', null, 404);
 
-                const [categorias] = await conex.query(`SELECT nombre FROM categorias WHERE id_categoria = ${id_categoria[0].id_categoria}`);
-                book.categorias = categorias;
+            const [categorias] = await conex.query(`SELECT nombre FROM categorias WHERE id_categoria = ${id_categoria[0].id_categoria}`);
+            book.categorias = categorias;
 
-                book.editorial = editorial.length > 0 ? editorial[0].nombre : null;
-                book.autor = autor.length > 0 ? autor[0] : 'Anonimo';
-                book.imagenes = imagenes.length > 0 ? imagenes[0] : null;
+            book.editorial = editorial.length > 0 ? editorial[0].nombre : null;
+            book.autor = autor.length > 0 ? autor[0] : 'Anonimo';
+            book.imagenes = imagenes.length > 0 ? imagenes[0] : null;
 
-                resultBooks.push(book);
-            }
+            resultBooks.push(book);
         } else {
-            return handleError(res, 'No hay libros', null, 404);
+            return handleError(res, 'No se encontro el libro', null, 404);
         }
 
-        res.status(200).send({ book: resultBooks });
+        res.status(200).send({ resultBooks });
 
     } catch (err) {
         return handleError(res, 'Error al mostrar los libros', err);
@@ -222,23 +220,23 @@ router.get('/filtrar', async (req, res) => {
 // });
 
 //Filter dinamic
-router.get('/:clave/:valor', async (req, res) => {
-    const { clave, valor } = req.params;
-    const segun = req.query.segun || 'titulo';
-    const orden = req.query.orden || 'asc';
+// router.get('/:clave/:valor', async (req, res) => {
+//     const { clave, valor } = req.params;
+//     const segun = req.query.segun || 'titulo';
+//     const orden = req.query.orden || 'asc';
 
-    try {
-        const [books] = await conex.execute(
-            `SELECT * FROM libros WHERE ${clave} = ? ORDER BY ${segun} ${orden}`,
-            [valor]
-        );
-        if (books.length == 0) return handleError(res, `No hay libros con: ${clave} = ${valor} `, null, 404);
+//     try {
+//         const [books] = await conex.execute(
+//             `SELECT * FROM libros WHERE ${clave} = ? ORDER BY ${segun} ${orden}`,
+//             [valor]
+//         );
+//         if (books.length == 0) return handleError(res, `No hay libros con: ${clave} = ${valor} `, null, 404);
 
-        res.status(200).send({ resultados: books });
+//         res.status(200).send({ resultados: books });
 
-    } catch (err) {
-        return handleError(res, 'Error al filtrar el libro', err);
-    }
-});
+//     } catch (err) {
+//         return handleError(res, 'Error al filtrar el libro', err);
+//     }
+// });
 
 module.exports = router;
