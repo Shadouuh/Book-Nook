@@ -52,6 +52,7 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
     const { user } = req.body;
     const clave = anju.encrypt(user.clave);
+    const img = user.foto_perfil || 'default.png';
 
     try {
         const [emailResult] = await conex.execute('SELECT id_login FROM login WHERE email=?', [user.email]);
@@ -77,8 +78,8 @@ router.post('/register', async (req, res) => {
         };
 
         const [userResult] = await conex.execute(
-            'INSERT INTO usuarios(nombre, apellido, direccion, fecha_nacimiento, alias, id_login) VALUES(?, ?, ?, ?, ?, ?)',
-            [user.nombre, user.apellido, user.direccion, user.fecha_nacimiento, user.alias, loginResult.insertId]
+            'INSERT INTO usuarios(nombre, apellido, direccion, fecha_nacimiento, alias, foto_perfil, id_login) VALUES(?, ?, ?, ?, ?, ?, ?)',
+            [user.nombre, user.apellido, user.direccion, user.fecha_nacimiento, user.alias, img, loginResult.insertId]
         );
 
         if (userResult.affectedRows == 0) return handleError(res, 'Error al insertar en usuarios');

@@ -53,31 +53,32 @@ GET http://localhost:3000/api/libros/ordenar/titulo HTTP/1.1
 GET http://localhost:3000/api/login HTTP/1.1
 
 ###
-POST http://localhost:3000/user/login
+POST http://localhost:3000/usuario/login
 Content-Type: application/json
 
 {   
     "user": {
-        "key": "mail.com.ar",
+        "key": "juan hot",
         "clave": "contra1234"
     }
 }
 
 ###
 
-POST http://localhost:3000/user/register
+POST http://localhost:3000/usuario/register
 Content-Type: application/json
 
 { 
     "user": {
-        "email": ".com",
-        "telefono": "1123581347",
+        "email": "juanhot@hotmail.com",
+        "telefono": "1122334455",
         "clave": "contra1234",
         "nombre": "Cottier",
         "apellido": "Juan",
         "direccion": "casa 123",
         "fecha_nacimiento": "2024-11-01",
-        "alias": "aña Juan"    
+        "foto_perfil": "gato.png",
+        "alias": "juan hot"    
     }
 }
 
@@ -119,7 +120,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3000/api/login/desc HTTP/1.1
+GET http://localhost:3000/api/libros/desc HTTP/1.1
 
 ###
 

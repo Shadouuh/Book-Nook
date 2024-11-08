@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-10-2024 a las 20:04:21
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Tiempo de generación: 08-11-2024 a las 13:01:29
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -67,7 +67,8 @@ INSERT INTO `carrito` (`id_carrito`, `es_actual`, `id_usuario`) VALUES
 (5, 1, 11),
 (7, 1, 14),
 (8, 1, 18),
-(9, 1, 2);
+(9, 1, 2),
+(10, 1, 19);
 
 -- --------------------------------------------------------
 
@@ -214,7 +215,8 @@ CREATE TABLE `libro_categoria` (
 INSERT INTO `libro_categoria` (`id_lc`, `id_libro`, `id_categoria`) VALUES
 (1, 3, 1),
 (2, 3, 3),
-(3, 8, 3);
+(3, 1, 2),
+(4, 8, 1);
 
 -- --------------------------------------------------------
 
@@ -285,7 +287,8 @@ INSERT INTO `login` (`id_login`, `email`, `telefono`, `clave`, `tipo`) VALUES
 (59, 'phppythonnodejs.com', '0987654321', 'iL9vU3dNs26QK8fjVk1jC7oFse6XK9fZVM1lC4oXsf6KK6fsgr4FM7zPHx2yy2xHPz7MF4rgsf6KK6fsXo4Cl1MVZf9KX6esFo7Cj1kVjf8KQ62sNd3Uv9Li', 'cliente'),
 (60, 'email.com', '0101010101', 'dd9LJ2akb70yF4sZX849l2MmZd9CX3exYf3Kv6DssD6vK3fYxe3XC9dZmM2l948XZs4Fy07bka2JL9dd', 'cliente'),
 (62, 'blablaemail.com', '11110000', 'dd9LJ2akb70yF4sZX849l2MmZd9CX3exYf3Kv6DssD6vK3fYxe3XC9dZmM2l948XZs4Fy07bka2JL9dd', 'cliente'),
-(68, 'mail.com.ar', '1123581347', 'dd9LJ2akb70yF4sZX849l2MmZd9CX3exYf3Kv6DssD6vK3fYxe3XC9dZmM2l948XZs4Fy07bka2JL9dd', 'cliente');
+(68, 'mail.com.ar', '1123581347', 'dd9LJ2akb70yF4sZX849l2MmZd9CX3exYf3Kv6DssD6vK3fYxe3XC9dZmM2l948XZs4Fy07bka2JL9dd', 'cliente'),
+(69, 'juanhot@hotmail.com', '1122334455', 'dd9LJ2akb70yF4sZX849l2MmZd9CX3exYf3Kv6DssD6vK3fYxe3XC9dZmM2l948XZs4Fy07bka2JL9dd', 'cliente');
 
 -- --------------------------------------------------------
 
@@ -385,6 +388,7 @@ CREATE TABLE `usuarios` (
   `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp(),
   `fecha_nacimiento` date DEFAULT NULL,
   `alias` varchar(50) DEFAULT NULL,
+  `foto_perfil` varchar(256) NOT NULL,
   `id_login` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
@@ -392,13 +396,14 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `direccion`, `fecha_registro`, `fecha_nacimiento`, `alias`, `id_login`) VALUES
-(1, 'Cuan', 'Gottier', 'Miranda 895', '2024-09-29 03:00:00', '2007-09-04', 'Juanerros', 1),
-(2, 'Don', 'Roberto', 'Los Pinos 343', '2024-10-17 13:29:15', '2002-01-01', 'Yadou', 56),
-(9, 'Juan', 'Juan', 'Acanomas 321', '2024-10-17 14:22:29', '2001-11-01', 'Juanarroz', 57),
-(11, 'Juan', 'Juan', 'Acanomas 321', '2024-10-17 20:06:58', '2001-11-01', 'Nauj', 59),
-(14, 'Cottier', 'Juan', 'casa 123', '2024-10-17 20:12:34', '2024-11-01', 'Evil Juan', 62),
-(18, 'Cottier', 'Juan', 'casa 123', '2024-10-17 20:39:19', '2024-11-01', 'aña Juan', 68);
+INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `direccion`, `fecha_registro`, `fecha_nacimiento`, `alias`, `foto_perfil`, `id_login`) VALUES
+(1, 'Cuan', 'Gottier', 'Miranda 895', '2024-09-29 03:00:00', '2007-09-04', 'Juanerros', 'default.png', 1),
+(2, 'Don', 'Roberto', 'Los Pinos 343', '2024-10-17 13:29:15', '2002-01-01', 'Yadou', 'default.png', 56),
+(9, 'Juan', 'Juan', 'Acanomas 321', '2024-10-17 14:22:29', '2001-11-01', 'Juanarroz', 'default.png', 57),
+(11, 'Juan', 'Juan', 'Acanomas 321', '2024-10-17 20:06:58', '2001-11-01', 'Nauj', 'default.png', 59),
+(14, 'Cottier', 'Juan', 'casa 123', '2024-10-17 20:12:34', '2024-11-01', 'Evil Juan', 'default.png', 62),
+(18, 'Cottier', 'Juan', 'casa 123', '2024-10-17 20:39:19', '2024-11-01', 'aña Juan', 'default.png', 68),
+(19, 'Cottier', 'Juan', 'casa 123', '2024-11-06 10:48:07', '2024-11-01', 'juan hot', 'gato.png', 69);
 
 -- --------------------------------------------------------
 
@@ -623,7 +628,7 @@ ALTER TABLE `autores`
 -- AUTO_INCREMENT de la tabla `carrito`
 --
 ALTER TABLE `carrito`
-  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_carrito` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `carrito_items`
@@ -659,13 +664,13 @@ ALTER TABLE `encargados`
 -- AUTO_INCREMENT de la tabla `libros`
 --
 ALTER TABLE `libros`
-  MODIFY `id_libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_libro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `libro_categoria`
 --
 ALTER TABLE `libro_categoria`
-  MODIFY `id_lc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_lc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `libro_clave`
@@ -683,7 +688,7 @@ ALTER TABLE `libro_imgs`
 -- AUTO_INCREMENT de la tabla `login`
 --
 ALTER TABLE `login`
-  MODIFY `id_login` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `id_login` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT de la tabla `mentores`
@@ -713,7 +718,7 @@ ALTER TABLE `sedes`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario_autor`
