@@ -2,8 +2,7 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-const multer = require('multer');
-const sharp = require('sharp');
+
 
 //Variales de entorno
 process.loadEnvFile();
@@ -57,36 +56,6 @@ app.use('/api', apiRoutes);
 
 /* -el insert del libro debe guardar en todas las tablas */
 
-const helpImg = (filePath, fileName, size = 300) => {
-    return sharp(filePath)
-        .resize(size)
-        .toFile(`./client/public/optimize/${fileName}`);
-}
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './server/uploads');
-    },
-    filename: (req, file, cb) => {
-        const ext = file.originalname.split('.').pop();
-        cb(null, `${Date.now()}.${ext}`);
-    }
-});
-
-const upload = multer({ storage });
-
-app.post('/subirImagen', upload.single('file'), (req, res) => {
-    try {
-
-        console.log(req.file);
-
-        helpImg(req.file.path, `resize-${req.file.filename}`, 200);
-
-        res.status(201).send({ message: 'Imagen subida correctamente!' });
-    } catch (err) {
-        return handleError(res, 'Error al subir la imagen', err);
-    }
-});
 
 
 

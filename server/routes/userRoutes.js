@@ -1,5 +1,7 @@
 const path = require('path');
 const anju = require('anju-js');
+const multer = require('multer');
+const sharp = require('sharp');
 const { router, handleError } = require(path.join(__dirname, '..', 'config', 'setup'));
 
 const createConnection = require(path.join(__dirname, '..', 'config', 'conexBD'));
@@ -48,13 +50,58 @@ router.post('/login', async (req, res) => {
     }
 });
 
-//Register
-router.post('/register', async (req, res) => {
-    const { user } = req.body;
-    const clave = anju.encrypt(user.clave);
-    const img = user.foto_perfil || 'default.png';
+const helpImg = (filePath, fileName, size = 300) => {
+    return sharp(filePath)
+        .resize(size)
+        .toFile(`./client/public/optimize/${fileName}`);
+}
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './server/uploads');
+    },
+    filename: (req, file, cb) => {
+        const ext = file.originalname.split('.').pop();
+        cb(null, `${Date.now()}.${ext}`);
+    }
+});
+
+const upload = multer({ storage });
+
+// app.post('/subirImagen', upload.single('file'), (req, res) => {
+//     try {
+
+//         console.log(req.file);
+
+//         helpImg(req.file.path, `resize-${req.file.filename}`, 200);
+
+//         res.status(201).send({ message: 'Imagen subida correctamente!' });
+//     } catch (err) {
+//         return handleError(res, 'Error al subir la imagen', err);
+//     }
+// });
+
+
+//Register
+router.post('/register', upload.single('file'), async (req, res) => {
+    const { user } = req.body;
+    const clave = user.clave;
+    // const clave = anju.encrypt(user.clave);
+    
     try {
+
+        console.log(req.body);
+
+        const ext = req.file.originalname.split('.').pop();
+
+        const img =  `${Date.now()}.${ext}`|| 'default.png';
+
+        console.log(req.file);
+        console.log(req.user);
+
+        helpImg(req.file.path, `resize-${req.file.filename}`, 200);
+        
+
         const [emailResult] = await conex.execute('SELECT id_login FROM login WHERE email=?', [user.email]);
         if (emailResult.length > 0) return handleError(res, `El email: ${user.email} ya tiene una cuenta registrada`, null, 409);
 
